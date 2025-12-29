@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import apiClient from '@/lib/api';
+import apiClient from '@/services/api';
 import { User, LoginForm, RegisterForm } from '@/types';
 
 interface AuthContextType {
