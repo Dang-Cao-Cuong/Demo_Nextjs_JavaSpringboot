@@ -5,7 +5,7 @@ import { Form, Input, Button, Card, Alert, Typography, Divider } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
-
+import { useRouter } from "next/navigation";
 const { Title, Text } = Typography;
 
 interface LoginFormValues {
@@ -18,13 +18,15 @@ export function LoginForm() {
   const [error, setError] = useState('');
   const [form] = Form.useForm();
   const { login } = useAuth();
-
+  const router  = useRouter()
   const handleSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
     setError('');
 
     try {
-      await login(values);
+    
+      //await login(values);
+      router.push("./dashboard")
       console.log('Login successful');
     } catch (err: any) {
       setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
