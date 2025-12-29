@@ -39,7 +39,7 @@ export function LoginForm() {
   return (
     <Card 
       style={{ width: '100%', maxWidth: 450 }}
-      bordered={false}
+      variant="borderless"
       className="shadow-lg"
     >
       <div style={{ textAlign: 'center', marginBottom: 32 }}>

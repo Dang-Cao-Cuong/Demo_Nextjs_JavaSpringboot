@@ -7,8 +7,8 @@ export default function LoginPage() {
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '20px'
+      backgroundColor:'#99CCCC',
+      
     }}>
       <LoginForm />
     </div>
