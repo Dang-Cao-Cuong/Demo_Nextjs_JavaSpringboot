@@ -1,0 +1,25 @@
+- Neu truyen qua nhieu params vao get method va post method thi co cach nao gop thanh 1 object o controller ko?
+-1 Gr co nhieu user
+xai 1 UserResponse de map
+-{
+	code : ***,
+	message : " Loi j do ",
+	result : [
+		{
+			fieldname : "username",
+			"message" : "Username must be at least 3 chacracter"
+		}
+{
+			fieldname : "username",
+			"message" : "Username must be at least 3 chacracter"
+		}
+{
+			fieldname : "username",
+			"message" : "Username must be at least 3 chacracter"
+		}
+{
+			fieldname : "username",
+			"message" : "Username must be at least 3 chacracter"
+		}
+	]
+}
