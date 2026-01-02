@@ -1,0 +1,44 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /cnc/v1
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/demoProject?options=-c%20timezone=Asia/Ho_Chi_Minh
+    username: admin
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Ho_Chi_Minh
+
+
+jwt:
+  signerKey: "fe444efee00d76c71f8f05b450b28eb9bbd104084e10d526f53718092e29ebec"
+  valid-duration: 3600
+  refreshable-duration: 604800
+
+app:
+  simulation:
+    interval: 10000
+
+logging:
+  level:
+    root: INFO
+    com.haunguyen: DEBUG
