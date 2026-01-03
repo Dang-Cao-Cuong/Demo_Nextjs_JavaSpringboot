@@ -2,15 +2,17 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import apiClient from '@/services/api';
-import { User, LoginForm, RegisterForm } from '@/types';
+import { authApi, LoginRequest } from '@/services/api/auth.api';
+import { usersApi } from '@/services/api/users.api';
+import { User, UserCreateRequest } from '@/types';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (credentials: LoginForm) => Promise<void>;
-  register: (data: RegisterForm) => Promise<void>;
+  login: (credentials: LoginRequest) => Promise<void>;
+  register: (data: UserCreateRequest) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -21,20 +23,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Load user from localStorage on mount
+  // Load user from backend on mount if token exists
   useEffect(() => {
-    const loadUser = () => {
+    const loadUser = async () => {
       if (typeof window !== 'undefined') {
-        const storedUser = localStorage.getItem('user');
-        const token = localStorage.getItem('token');
+        const accessToken = localStorage.getItem('access_token');
         
-        if (storedUser && token) {
+        if (accessToken) {
           try {
-            setUser(JSON.parse(storedUser));
+            const userData = await usersApi.getMyInfo();
+            setUser(userData);
           } catch (error) {
-            console.error('Error parsing stored user:', error);
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
+            console.error('Error loading user:', error);
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
           }
         }
       }
@@ -44,48 +46,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
-  const login = async (credentials: LoginForm) => {
-    const response = await apiClient.login(credentials);
+  const login = async (credentials: LoginRequest) => {
+    const response = await authApi.login(credentials);
     
-    if (response.success && response.data) {
-      const { user, token } = response.data;
-      
-      // Save to localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setUser(user);
-      router.push('/dashboard');
-    } else {
-      throw new Error(response.error || 'Đăng nhập thất bại');
+    // Save tokens to localStorage
+    localStorage.setItem('access_token', response.accessToken);
+    localStorage.setItem('refresh_token', response.refreshToken);
+    
+    // Wait a bit to ensure localStorage is updated
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Fetch user info after successful login with the new token
+    try {
+      const userData = await usersApi.getMyInfo();
+      setUser(userData);
+      router.push('/home');
+    } catch (error) {
+      console.error('Error fetching user info after login:', error);
+      throw error;
     }
   };
 
-  const register = async (data: RegisterForm) => {
-    const response = await apiClient.register(data);
+  const register = async (data: UserCreateRequest) => {
+    // Create user via POST /users
+    await usersApi.createUser(data);
     
-    if (response.success && response.data) {
-      const { user, token } = response.data;
-      
-      // Save to localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setUser(user);
-      router.push('/dashboard');
-    } else {
-      throw new Error(response.error || 'Đăng ký thất bại');
-    }
+    // After successful registration, auto login
+    await login({
+      username: data.username,
+      password: data.password,
+    });
   };
 
   const logout = async () => {
-    await apiClient.logout();
+    try {
+      await authApi.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     
     router.push('/login');
+  };
+
+  const refreshUser = async () => {
+    try {
+      const userData = await usersApi.getMyInfo();
+      setUser(userData);
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+      throw error;
+    }
   };
 
   return (
@@ -96,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         register,
         logout,
+        refreshUser,
         isAuthenticated: !!user,
       }}
     >

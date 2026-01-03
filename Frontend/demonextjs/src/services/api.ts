@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 
 // 1. Khởi tạo instance
 const api: AxiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',

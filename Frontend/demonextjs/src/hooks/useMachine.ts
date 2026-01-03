@@ -1,130 +1,108 @@
+'use client';
+
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { message } from 'antd';
-import { machinesApi } from '@/services/machines/machineApi';
+import { machinesApi } from '@/services/api/machines.api';
 import {
   Machine,
-  MachineFilter,
-  CreateMachineDTO,
-  UpdateMachineDTO,
-} from '@/types';
+  MachineCreateRequest,
+  MachineUpdateRequest,
+  MachineFilterParams,
+} from "@/types";
+import { message } from 'antd';
 
-// Query keys
-export const machineKeys = {
-  all: ['machines'] as const,
-  lists: () => [...machineKeys.all, 'list'] as const,
-  list: (filter: MachineFilter) => [...machineKeys.lists(), filter] as const,
-  details: () => [...machineKeys.all, 'detail'] as const,
-  detail: (id: string) => [...machineKeys.details(), id] as const,
-  locations: () => [...machineKeys.all, 'locations'] as const,
-};
-
-/**
- * Hook lấy danh sách máy với filter và pagination
- */
-export function useMachines(filter: MachineFilter = {}) {
-  return useQuery({
-    queryKey: machineKeys.list(filter),
-    queryFn: () => machinesApi.getAll(filter),
+export function useMachines(initialFilters?: MachineFilterParams) {
+  const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<MachineFilterParams>(initialFilters || {
+    page: 0,
+    size: 10,
   });
+
+  // Fetch machines
+  const {
+    data: machinesResponse,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['machines', filters],
+    queryFn: () => machinesApi.getAllMachines(filters),
+  });
+
+  // Create machine
+  const createMutation = useMutation({
+    mutationFn: (data: MachineCreateRequest) => machinesApi.createMachine(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['machines'] });
+      message.success('Tạo máy thành công');
+    },
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message || 'Tạo máy thất bại');
+    },
+  });
+
+  // Update machine
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: MachineUpdateRequest }) =>
+      machinesApi.updateMachine(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['machines'] });
+      message.success('Cập nhật máy thành công');
+    },
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message || 'Cập nhật máy thất bại');
+    },
+  });
+
+  // Delete machine
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => machinesApi.deleteMachine(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['machines'] });
+      message.success('Xóa máy thành công');
+    },
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message || 'Xóa máy thất bại');
+    },
+  });
+
+  return {
+    machines: machinesResponse?.content || [],
+    totalPages: machinesResponse?.totalPages || 0,
+    totalElements: machinesResponse?.totalElements || 0,
+    currentPage: machinesResponse?.number || 0,
+    isLoading,
+    isError,
+    error,
+    filters,
+    setFilters,
+    refetch,
+    createMachine: createMutation.mutate,
+    updateMachine: updateMutation.mutate,
+    deleteMachine: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
+  };
 }
 
-/**
- * Hook lấy chi tiết một máy
- */
 export function useMachine(id: string) {
-  return useQuery({
-    queryKey: machineKeys.detail(id),
-    queryFn: () => machinesApi.getById(id),
+  const {
+    data: machine,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['machine', id],
+    queryFn: () => machinesApi.getMachineById(id),
     enabled: !!id,
   });
-}
 
-/**
- * Hook lấy danh sách locations
- */
-export function useLocations() {
-  return useQuery({
-    queryKey: machineKeys.locations(),
-    queryFn: () => machinesApi.getLocations(),
-  });
-}
-
-/**
- * Hook tạo máy mới
- */
-export function useCreateMachine() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: CreateMachineDTO) => machinesApi.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: machineKeys.lists() });
-      message.success('Tạo máy mới thành công!');
-    },
-    onError: (error: Error) => {
-      message.error(error.message || 'Có lỗi xảy ra khi tạo máy');
-    },
-  });
-}
-
-/**
- * Hook cập nhật máy
- */
-export function useUpdateMachine() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateMachineDTO }) =>
-      machinesApi.update(id, data),
-    onSuccess: (machine: Machine) => {
-      queryClient.invalidateQueries({ queryKey: machineKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: machineKeys.detail(machine.id),
-      });
-      message.success('Cập nhật máy thành công!');
-    },
-    onError: (error: Error) => {
-      message.error(error.message || 'Có lỗi xảy ra khi cập nhật máy');
-    },
-  });
-}
-
-/**
- * Hook xóa máy
- */
-export function useDeleteMachine() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (id: string) => machinesApi.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: machineKeys.lists() });
-      message.success('Xóa máy thành công!');
-    },
-    onError: (error: Error) => {
-      message.error(error.message || 'Có lỗi xảy ra khi xóa máy');
-    },
-  });
-}
-
-/**
- * Hook cập nhật trạng thái máy
- */
-export function useUpdateMachineStatus() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: Machine['status'] }) =>
-      machinesApi.updateStatus(id, status),
-    onSuccess: (machine: Machine) => {
-      queryClient.invalidateQueries({ queryKey: machineKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: machineKeys.detail(machine.id),
-      });
-      message.success('Cập nhật trạng thái thành công!');
-    },
-    onError: (error: Error) => {
-      message.error(error.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
-    },
-  });
+  return {
+    machine,
+    isLoading,
+    isError,
+    error,
+  };
 }

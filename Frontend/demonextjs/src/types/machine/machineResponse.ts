@@ -1,11 +1,12 @@
 import { Machine } from "./machine";
 
-export interface MachineResponse{
-    data:Machine[];
-    meta:{
-        total:number;
-        page:number;
-        limit:number;
-        totalPage:number;
-    };
+export interface MachineResponse {
+  content: Machine[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
 }
