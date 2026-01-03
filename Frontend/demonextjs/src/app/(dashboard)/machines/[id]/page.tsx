@@ -1,7 +1,6 @@
 'use client';
 
-import { use } from 'react';
-import Link from 'next/link';
+import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     ArrowLeftOutlined,
@@ -10,20 +9,16 @@ import {
     CalendarOutlined,
     EnvironmentOutlined,
     SettingOutlined,
-    ShopOutlined,
     DashboardOutlined,
 } from '@ant-design/icons';
+import { Card, Button, Spin, Empty, Descriptions, Space, Divider } from 'antd';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
 import { MachineStatusBadge } from '@/components/machines/machineStatusBadge';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { useMachine, useDeleteMachine } from '@/hooks/useMachine';
-import { useState } from 'react';
+import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
+import { useMachine } from '@/hooks/useMachine';
+import { useMachines } from '@/hooks/useMachine';
 
 interface MachineDetailPageProps {
     params: Promise<{ id: string }>;
@@ -32,183 +27,170 @@ interface MachineDetailPageProps {
 export default function MachineDetailPage({ params }: MachineDetailPageProps) {
     const { id } = use(params);
     const router = useRouter();
-    const { data: machine, isLoading, error } = useMachine(id);
-    const deleteMachine = useDeleteMachine();
+    const { machine, isLoading, error } = useMachine(id);
+    const { deleteMachine, isDeleting } = useMachines();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-    const handleDelete = () => {
-        deleteMachine.mutate(id, {
-            onSuccess: () => {
-                router.push('/machines');
-            },
-        });
+    const handleDeleteConfirm = () => {
+        deleteMachine(id);
+        setShowDeleteDialog(false);
+        router.push('/machines');
     };
 
     if (isLoading) {
         return (
-            <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                    <Skeleton className="h-10 w-10" />
-                    <Skeleton className="h-8 w-64" />
-                </div>
-                <Card>
-                    <CardHeader>
-                        <Skeleton className="h-6 w-48" />
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {[...Array(6)].map((_, i) => (
-                            <div key={i} className="flex gap-4">
-                                <Skeleton className="h-4 w-32" />
-                                <Skeleton className="h-4 w-48" />
-                            </div>
-                        ))}
-                    </CardContent>
-                </Card>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+                <Spin size="large" tip="Đang tải thông tin máy..." />
             </div>
         );
     }
 
     if (error || !machine) {
         return (
-            <div className="space-y-6">
-                <Button variant="ghost" onClick={() => router.back()}>
-                    <ArrowLeftOutlined className="mr-2 h-4 w-4" />
+            <div style={{ padding: '24px' }}>
+                <Button
+                    icon={<ArrowLeftOutlined />}
+                    onClick={() => router.back()}
+                    style={{ marginBottom: '16px' }}
+                >
                     Quay lại
                 </Button>
-                <Card>
-                    <CardContent className="py-12 text-center">
-                        <p className="text-muted-foreground">
-                            Không tìm thấy máy hoặc đã xảy ra lỗi.
-                        </p>
-                        <Button className="mt-4" asChild>
-                            <Link href="/machines">Về danh sách máy</Link>
-                        </Button>
-                    </CardContent>
-                </Card>
+                <Empty
+                    description="Không tìm thấy máy hoặc đã xảy ra lỗi."
+                    style={{ marginTop: '40px' }}
+                >
+                    <Button type="primary" onClick={() => router.push('/machines')}>
+                        Về danh sách máy
+                    </Button>
+                </Empty>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()}>
-                        <ArrowLeftOutlined className="h-4 w-4" />
-                    </Button>
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                            {machine.name}
-                        </h1>
-
-                    </div>
+        <div style={{ padding: '24px' }}>
+            {/* Header */}
+            <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'flex-start',
+                marginBottom: '24px',
+                flexWrap: 'wrap',
+                gap: '16px'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Button
+                        icon={<ArrowLeftOutlined />}
+                        onClick={() => router.back()}
+                        type="text"
+                    />
+                    <h1 style={{ 
+                        fontSize: '28px', 
+                        fontWeight: 'bold', 
+                        margin: 0,
+                        color: '#1f2937'
+                    }}>
+                        {machine.name}
+                    </h1>
                 </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" asChild>
-                        <Link href={`/machines/${id}/edit`}>
-                            <EditOutlined className="mr-2 h-4 w-4" />
-                            Chỉnh sửa
-                        </Link>
+                <Space>
+                    <Button
+                        icon={<EditOutlined />}
+                        onClick={() => router.push(`/machines/${id}/edit`)}
+                    >
+                        Chỉnh sửa
                     </Button>
                     <Button
-                        variant="destructive"
+                        danger
+                        icon={<DeleteOutlined />}
                         onClick={() => setShowDeleteDialog(true)}
                     >
-                        <DeleteOutlined className="mr-2 h-4 w-4" />
                         Xóa
                     </Button>
-                </div>
+                </Space>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <SettingOutlined className="h-5 w-5" />
+            {/* Main Content */}
+            <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '24px'
+            }}>
+                {/* Machine Information Card */}
+                <Card
+                    title={
+                        <span>
+                            <SettingOutlined style={{ marginRight: '8px' }} />
                             Thông tin máy
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-sm text-muted-foreground">Tên máy</p>
-                                <p className="font-medium">{machine.name}</p>
-                            </div>
-                           
-                            <div>
-                                <p className="text-sm text-muted-foreground">Model</p>
-                                <p className="font-medium">{machine.model}</p>
-                            </div>
+                        </span>
+                    }
+                    style={{ gridColumn: 'span 2' }}
+                >
+                    <Descriptions bordered column={{ xs: 1, sm: 1, md: 2 }}>
+                        <Descriptions.Item label="Tên máy">
+                            {machine.name}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Model">
+                            {machine.model}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Năm sản xuất">
+                            {machine.manufactureYear}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Vị trí">
+                            <Space>
+                                <EnvironmentOutlined />
+                                {machine.location}
+                            </Space>
+                        </Descriptions.Item>
+                    </Descriptions>
 
-                            <div>
-                                <p className="text-sm text-muted-foreground">Năm sản xuất</p>
-                                <p className="font-medium">{machine.manufacture_year}</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-muted-foreground">Vị trí</p>
-                                <p className="font-medium flex items-center gap-1">
-                                    <EnvironmentOutlined className="h-4 w-4" />
-                                    {machine.location}
-                                </p>
-                            </div>
-                        </div>
+                    <Divider />
 
-                        <Separator />
-
-
-
-                        <Separator />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <p className="text-muted-foreground">Ngày tạo</p>
-                                <p className="font-medium flex items-center gap-1">
-                                    <CalendarOutlined className="h-4 w-4" />
-                                    {format(new Date(machine.created_at), 'dd/MM/yyyy HH:mm', {
-                                        locale: vi,
-                                    })}
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-muted-foreground">Cập nhật lần cuối</p>
-                                <p className="font-medium flex items-center gap-1">
-                                    <CalendarOutlined className="h-4 w-4" />
-                                    {format(new Date(machine.updated_at), 'dd/MM/yyyy HH:mm', {
-                                        locale: vi,
-                                    })}
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
+                    <Descriptions bordered column={1} size="small">
+                        <Descriptions.Item label="Ngày tạo">
+                            <Space>
+                                <CalendarOutlined />
+                                {machine.createdAt 
+                                    ? format(new Date(machine.createdAt), 'dd/MM/yyyy HH:mm', { locale: vi })
+                                    : 'N/A'
+                                }
+                            </Space>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Cập nhật lần cuối">
+                            <Space>
+                                <CalendarOutlined />
+                                {machine.updatedAt 
+                                    ? format(new Date(machine.updatedAt), 'dd/MM/yyyy HH:mm', { locale: vi })
+                                    : 'N/A'
+                                }
+                            </Space>
+                        </Descriptions.Item>
+                    </Descriptions>
                 </Card>
 
-                <div className="space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <DashboardOutlined className="h-5 w-5" />
-                                Trạng thái
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <MachineStatusBadge status={machine.status} className="text-lg" />
-                        </CardContent>
-                    </Card>
-
-
-
-                </div>
+                {/* Status Card */}
+                <Card
+                    title={
+                        <span>
+                            <DashboardOutlined style={{ marginRight: '8px' }} />
+                            Trạng thái
+                        </span>
+                    }
+                    style={{ height: 'fit-content' }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+                        <MachineStatusBadge status={machine.status} />
+                    </div>
+                </Card>
             </div>
 
-            <ConfirmDialog
+            {/* Delete Confirmation Dialog */}
+            <MachineDeleteDialog
                 open={showDeleteDialog}
                 onOpenChange={setShowDeleteDialog}
-                title="Xác nhận xóa máy"
-                description={`Bạn có chắc chắn muốn xóa máy "${machine.name}"? Hành động này không thể hoàn tác.`}
-                confirmText="Xóa máy"
-                onConfirm={handleDelete}
-                variant="destructive"
-                isLoading={deleteMachine.isPending}
+                onConfirm={handleDeleteConfirm}
+                machineName={machine.name}
+                loading={isDeleting}
             />
         </div>
     );

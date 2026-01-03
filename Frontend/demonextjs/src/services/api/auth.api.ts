@@ -12,11 +12,29 @@ export interface LoginResponse {
   expiresIn: number;
 }
 
+// Backend ApiResponse wrapper
+interface ApiResponse<T> {
+  code: number;
+  message?: string;
+  result: T;
+}
+
 export const authApi = {
   // Đăng nhập
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', credentials);
+    console.log('Login response:', response.data);
+    
+    // Xử lý cả 2 trường hợp: response có wrapper ApiResponse hoặc không
+    const data = response.data.result || response.data;
+    console.log('Extracted data:', data);
+    
+    if (!data.accessToken || !data.refreshToken) {
+      console.error('Invalid response structure:', response.data);
+      throw new Error('Invalid response: missing tokens');
+    }
+    
+    return data;
   },
 
   // Đăng xuất
@@ -28,8 +46,17 @@ export const authApi = {
 
   // Refresh token
   refresh: async (refreshToken: string): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/refresh', { refreshToken });
-    return response.data;
+    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', { refreshToken });
+    console.log('Refresh response:', response.data);
+    
+    const data = response.data.result || response.data;
+    
+    if (!data.accessToken) {
+      console.error('Invalid refresh response:', response.data);
+      throw new Error('Invalid refresh response: missing accessToken');
+    }
+    
+    return data;
   },
 };
 

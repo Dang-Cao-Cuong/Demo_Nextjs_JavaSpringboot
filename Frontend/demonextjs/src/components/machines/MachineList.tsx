@@ -15,6 +15,7 @@ interface MachineListProps {
   onEdit: (machine: Machine) => void;
   onDelete: (id: string) => void;
   onFilterChange: (filters: any) => void;
+  onView?: (id: string) => void;
 }
 
 export default function MachineList({
@@ -27,6 +28,7 @@ export default function MachineList({
   onEdit,
   onDelete,
   onFilterChange,
+  onView,
 }: MachineListProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -45,6 +47,7 @@ export default function MachineList({
                   machine={machine}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  onView={onView}
                 />
               </Col>
             ))}

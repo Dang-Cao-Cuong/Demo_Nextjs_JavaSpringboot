@@ -53,7 +53,18 @@ apiClient.interceptors.response.use(
           refreshToken,
         });
 
-        const { accessToken } = response.data;
+        console.log('Refresh token response:', response.data);
+        
+        // Backend trả về ApiResponse wrapper: { code, message, result: { accessToken, refreshToken } }
+        // Hoặc có thể trực tiếp { accessToken, refreshToken }
+        const data = response.data.result || response.data;
+        const accessToken = data.accessToken;
+        
+        if (!accessToken) {
+          console.error('No accessToken in refresh response:', response.data);
+          throw new Error('Invalid refresh token response');
+        }
+        
         localStorage.setItem('access_token', accessToken);
 
         // Retry request với token mới
