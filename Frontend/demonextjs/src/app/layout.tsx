@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AntdRegistry } from '@ant-design/nextjs-registry';
-import { AuthProvider } from '@/contexts/auth-context';
-import { ReactQueryProvider } from '@/providers/react-query-provider';
 import "./globals.css";
+
+import { QueryProvider } from "@/providers/QueryProvider";
+import { AuthProvider as ZustandAuthProvider } from "@/providers/AuthProvider";
+import { AuthProvider } from "@/contexts/auth-context";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import AntdRegistry from "./antd-registry";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Demo Next.js - Login",
-  description: "Demo login interface with Ant Design",
+  title: "Quản lý máy CNC",
+  description: "Hệ thống quản lý máy CNC",
 };
 
 export default function RootLayout({
@@ -26,18 +30,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AntdRegistry>
-          <ReactQueryProvider>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </ReactQueryProvider>
+          <ThemeProvider>
+            <ErrorBoundary>
+              <QueryProvider>
+                <AuthProvider>
+                  {children}
+                </AuthProvider>
+              </QueryProvider>
+            </ErrorBoundary>
+          </ThemeProvider>
         </AntdRegistry>
       </body>
     </html>
   );
 }
+

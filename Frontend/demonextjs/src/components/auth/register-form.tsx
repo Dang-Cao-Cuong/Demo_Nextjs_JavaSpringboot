@@ -1,18 +1,23 @@
 'use client';
 
 import { useState } from "react";
-import { Form, Input, Button, Card, Alert, Typography, Divider } from 'antd';
+import { Form, Input, Button, Card, Alert, Typography, Divider, Select, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
+import { UserCreateRequest } from '@/types';
+
+
 
 const { Title, Text } = Typography;
 
 interface RegisterFormValues {
-  name: string;
+  username: string;
+  fullname: string;
   email: string;
   password: string;
   confirmPassword: string;
+  roles: string[];
 }
 
 export function RegisterForm() {
@@ -27,10 +32,12 @@ export function RegisterForm() {
 
     try {
       const { confirmPassword, ...registerData } = values;
-      await register(registerData);
-      console.log('Register successful');
+      await register(registerData as UserCreateRequest);
+      message.success('Đăng ký thành công!');
     } catch (err: any) {
-      setError(err.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+      const errorMsg = err?.response?.data?.message || err.message || 'Đăng ký thất bại. Vui lòng thử lại.';
+      setError(errorMsg);
+      message.error(errorMsg);
       console.error('Register error:', err);
     } finally {
       setIsLoading(false);
@@ -38,9 +45,9 @@ export function RegisterForm() {
   };
 
   return (
-    <Card 
+    <Card
       style={{ width: '100%', maxWidth: 450 }}
-          variant="borderless"
+      variant="borderless"
       className="shadow-lg"
     >
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -66,13 +73,31 @@ export function RegisterForm() {
         autoComplete="off"
         layout="vertical"
         size="large"
+        initialValues={{
+          roles: ['USER']
+        }}
       >
         <Form.Item
-          name="name"
+          name="username"
+          label="Tên đăng nhập"
+          rules={[
+            { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
+            { min: 3, message: 'Tên đăng nhập phải có ít nhất 3 ký tự!' }
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="username"
+            disabled={isLoading}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="fullname"
           label="Họ tên"
           rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
         >
-          <Input 
+          <Input
             prefix={<UserOutlined />}
             placeholder="Nguyễn Văn A"
             disabled={isLoading}
@@ -87,10 +112,26 @@ export function RegisterForm() {
             { type: 'email', message: 'Email không hợp lệ!' }
           ]}
         >
-          <Input 
+          <Input
             prefix={<MailOutlined />}
             placeholder="ten@email.com"
             disabled={isLoading}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="roles"
+          label="Vai trò"
+        >
+          <Select
+            mode="multiple"
+            placeholder="Chọn vai trò"
+            disabled={isLoading}
+            options={[
+              { label: 'USER', value: 'USER' },
+              { label: 'ADMIN', value: 'ADMIN' },
+              { label: 'MANAGER', value: 'MANAGER' },
+            ]}
           />
         </Form.Item>
 
@@ -133,9 +174,9 @@ export function RegisterForm() {
         </Form.Item>
 
         <Form.Item style={{ marginTop: 24 }}>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
+          <Button
+            type="primary"
+            htmlType="submit"
             block
             loading={isLoading}
           >
