@@ -1,0 +1,133 @@
+h1 {
+  background: gray;
+  color: aliceblue;
+  text-align: center;
+}
+
+.user-info p {
+  text-align: right;
+  margin: 10px;
+  padding: 10px;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;   /* canh giữa ngang */
+  align-items: center;       /* canh giữa dọc */
+  gap: 10px;                 /* khoảng cách giữa các phần tử */
+  margin: 20px auto;
+}
+
+
+.nav #add {
+  margin: 10px;
+  background-color: lightgray;
+  padding: 10px;
+  width: 150px;
+  border: none;
+  cursor: pointer;
+}
+
+.nav #add:hover {
+  background-color: gray;
+}
+
+.nav select {
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
+  width: 150px;
+}
+
+.nav input {
+  border: 1px solid black;
+  margin:10px;
+  padding: 10px;
+  width: 300px;
+}
+
+.nav #searchPro {
+  background-color: lightgray;
+  padding: 10px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.nav input:hover {
+  box-shadow: gray;
+}
+
+.products {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my-table {
+  border-collapse: collapse;   /* 🔥 QUAN TRỌNG */
+  margin: 0 auto;
+}
+
+.my-table th,
+.my-table td {
+  border: 1px solid black;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.my-table img {
+  width: 100px;
+}
+
+.my-table #edit {
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px;
+  background-color: rgb(0, 158, 158);
+  border-radius: 3px;
+}
+
+.my-table #edit:hover {
+  background-color: rgb(0, 117, 117);
+}
+
+.my-table #delete {
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px;
+  background-color: rgb(255, 45, 45);
+  border-radius: 3px;
+}
+
+.my-table #delete:hover {
+  background-color: rgb(168, 0, 0);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  background: white;
+  padding: 20px;
+  width: 450px;
+  border-radius: 6px;
+}
+
+.modal-box input {
+  width: 95%;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
