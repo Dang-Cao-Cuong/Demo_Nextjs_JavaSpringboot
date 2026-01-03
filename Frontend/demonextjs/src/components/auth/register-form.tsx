@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Form, Input, Button, Card, Alert, Typography, Divider, Select, message } from 'antd';
+import { Form, Input, Button, Card, Alert, Typography, Divider, Select, App } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
@@ -21,6 +21,7 @@ interface RegisterFormValues {
 }
 
 export function RegisterForm() {
+  const { message } = App.useApp();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [form] = Form.useForm();

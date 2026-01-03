@@ -38,6 +38,10 @@ export default function MachinesPage() {
     router.push(`/machines/${machine.id}/edit`);
   };
 
+  const handleView = (id: string) => {
+    router.push(`/machines/${id}`);
+  };
+
   const handleDeleteClick = (id: string) => {
     const machine = machines.find((m) => m.id === id);
     if (machine) {
@@ -95,6 +99,7 @@ export default function MachinesPage() {
         onEdit={handleEdit}
         onDelete={handleDeleteClick}
         onFilterChange={handleFilterChange}
+        onView={handleView}
       />
 
       {/* Delete Dialog */}

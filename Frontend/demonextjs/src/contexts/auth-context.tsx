@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const userData = await usersApi.getMyInfo();
       setUser(userData);
-      router.push('/home');
+      // Không tự động redirect ở đây, để component xử lý
     } catch (error) {
       console.error('Error fetching user info after login:', error);
       throw error;

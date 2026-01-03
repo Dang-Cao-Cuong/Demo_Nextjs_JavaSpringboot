@@ -8,6 +8,7 @@ interface MachineCardProps {
   machine: Machine;
   onEdit: (machine: Machine) => void;
   onDelete: (id: string) => void;
+  onView?: (id: string) => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -25,16 +26,21 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export default function MachineCard({ machine, onEdit, onDelete }: MachineCardProps) {
+export default function MachineCard({ machine, onEdit, onDelete, onView }: MachineCardProps) {
   return (
     <Card
       hoverable
+      onClick={() => onView?.(machine.id)}
+      style={{ cursor: 'pointer' }}
       actions={[
         <Button
           key="edit"
           type="link"
           icon={<EditOutlined />}
-          onClick={() => onEdit(machine)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(machine);
+          }}
         >
           Sửa
         </Button>,
@@ -43,13 +49,16 @@ export default function MachineCard({ machine, onEdit, onDelete }: MachineCardPr
           type="link"
           danger
           icon={<DeleteOutlined />}
-          onClick={() => onDelete(machine.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(machine.id);
+          }}
         >
           Xóa
         </Button>,
       ]}
     >
-      <Space direction="vertical" size="small" style={{ width: '100%' }}>
+      <Space vertical size="small" style={{ width: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>{machine.name}</h3>
           <Tag color={getStatusColor(machine.status)}>{machine.status}</Tag>

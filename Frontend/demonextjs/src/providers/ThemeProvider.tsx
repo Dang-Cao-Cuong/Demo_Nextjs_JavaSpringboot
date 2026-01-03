@@ -1,6 +1,6 @@
 'use client';
 
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, theme, App } from 'antd';
 import { ReactNode } from 'react';
 import viVN from 'antd/locale/vi_VN';
 
@@ -21,7 +21,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         algorithm: theme.defaultAlgorithm,
       }}
     >
-      {children}
+      <App>
+        {children}
+      </App>
     </ConfigProvider>
   );
 }

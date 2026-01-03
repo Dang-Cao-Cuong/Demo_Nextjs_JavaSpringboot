@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import { Form, Input, Button, Card, Alert, Typography, Divider, message } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Form, Input, Button, Card, Alert, Typography, Divider, App } from 'antd';
 import { UserOutlined, LockOutlined, LoginOutlined, LoadingOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
@@ -12,6 +13,11 @@ const { Title, Text } = Typography;
 
 
 export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get('returnUrl');
+  const { message } = App.useApp();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [form] = Form.useForm<LoginRequest>();
@@ -24,6 +30,13 @@ export function LoginForm() {
     try {
       await login(values);
       message.success('Đăng nhập thành công!');
+      
+      // Redirect về trang trước đó hoặc trang home
+      if (returnUrl) {
+        router.push(decodeURIComponent(returnUrl));
+      } else {
+        router.push('/home');
+      }
     } catch (err: any) {
       const errorMsg = err?.response?.data?.message || err.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
       setError(errorMsg);

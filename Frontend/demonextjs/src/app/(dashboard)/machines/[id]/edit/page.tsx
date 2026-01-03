@@ -1,5 +1,6 @@
 'use client';
 
+import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, Button, Spin, Empty } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -7,14 +8,15 @@ import { useMachine, useMachines } from '@/hooks/useMachine';
 import MachineForm from '@/components/machines/machineForm';
 import { MachineUpdateRequest } from '@/types';
 
-export default function EditMachinePage({ params }: { params: { id: string } }) {
+export default function EditMachinePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const { machine, isLoading } = useMachine(params.id);
+  const { id } = use(params);
+  const { machine, isLoading } = useMachine(id);
   const { updateMachine, isUpdating } = useMachines();
 
   const handleSubmit = (data: MachineUpdateRequest) => {
     updateMachine(
-      { id: params.id, data },
+      { id, data },
       {
         onSuccess: () => {
           router.push('/machines');
@@ -57,7 +59,12 @@ export default function EditMachinePage({ params }: { params: { id: string } }) 
       </div>
 
       {/* Form */}
-      <Card>
+      <Card 
+        style={{ 
+          border: '2px solid #d9d9d9',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+        }}
+      >
         <MachineForm
           machine={machine}
           onSubmit={handleSubmit}
