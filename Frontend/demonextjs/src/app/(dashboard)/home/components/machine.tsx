@@ -19,7 +19,7 @@ interface Product {
 
 const username = "nguyenvana";
 
-const Quiz: React.FC = () => {
+const Machine: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([
     {
       id: 1001,
@@ -211,4 +211,4 @@ const Quiz: React.FC = () => {
   );
 };
 
-export default Quiz;
+export default Machine;

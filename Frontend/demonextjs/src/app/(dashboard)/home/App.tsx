@@ -1,4 +1,4 @@
-import Quiz from "./components/Quiz";
+import Machine from "./components/machine";
 
 function App() {
 
@@ -6,8 +6,7 @@ function App() {
 
     <>
       <h1>Quản lý máy móc</h1>
-      <Quiz />
-
+      <Machine />
     </>
   )
 }
