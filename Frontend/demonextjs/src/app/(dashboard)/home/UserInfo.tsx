@@ -1,3 +1,5 @@
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 interface UserInfoProps {
@@ -7,7 +9,7 @@ interface UserInfoProps {
 const UserInfo: React.FC<UserInfoProps> = ({ username }) => {
     return (
         <div className="user-info">
-            <p>Tài khoản: <b>{username}</b></p>
+            <p><FontAwesomeIcon icon={faUser} /> <b>{username}</b></p>
         </div>
     );
 };

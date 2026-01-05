@@ -1,214 +1,70 @@
-import React, { useState } from "react";
+import React from "react";
 import UserInfo from "./UserInfo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlus,
-  faMagnifyingGlass,
-  faPenToSquare,
-  faTrashCan,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
 
-interface Product {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  status: string;
+interface CNCMachine {
+  id: string;
+  status: "Hoạt động" | "Cảnh báo" | "Ngưng";
+  power: number;
+  note: string;
 }
 
-const username = "nguyenvana";
+const username: string = "nguyenvana";
 
-const Machine: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: 1001,
-      name: "Transistor",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Transistors.agr.jpg/500px-Transistors.agr.jpg",
-      price: 1500,
-      status: "Đang hoạt động",
-    },
-  ]);
+const machines: CNCMachine[] = [
+  { id: "CNC-01", status: "Hoạt động", power: 80, note: "Bình thường" },
+  { id: "CNC-02", status: "Cảnh báo", power: 60, note: "Nhiệt độ cao" },
+  { id: "CNC-03", status: "Ngưng", power: 0, note: "Đang sửa chữa" },
+];
 
-  const [keyword, setKeyword] = useState("");
-  const [sortType, setSortType] = useState("new");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  const [form, setForm] = useState<Product>({
-    id: 0,
-    name: "",
-    image: "",
-    price: 0,
-    status: "Đang hoạt động",
-  });
-
-  /* ================= SEARCH ================= */
-  const handleSearch = () => {
-    let result = [...products].filter((p) =>
-      p.name.toLowerCase().includes(keyword.toLowerCase())
-    );
-
-    if (sortType === "az")
-      result.sort((a, b) => a.name.localeCompare(b.name));
-    if (sortType === "za")
-      result.sort((a, b) => b.name.localeCompare(a.name));
-
-    setProducts(result);
-  };
-
-  /* ================= SORT ================= */
-  const handleSort = (value: string) => {
-    setSortType(value);
-    let sorted = [...products];
-
-    if (value === "az") sorted.sort((a, b) => a.name.localeCompare(b.name));
-    if (value === "za") sorted.sort((a, b) => b.name.localeCompare(a.name));
-    if (value === "new") sorted.sort((a, b) => b.id - a.id);
-
-    setProducts(sorted);
-  };
-
-  /* ================= MODAL ================= */
-  const openAddModal = () => {
-    setEditingProduct(null);
-    setForm({
-      id: 0,
-      name: "",
-      image: "",
-      price: 0,
-      status: "Đang hoạt động",
-    });
-    setModalOpen(true);
-  };
-
-  const openEditModal = (p: Product) => {
-    setEditingProduct(p);
-    setForm(p);
-    setModalOpen(true);
-  };
-
-  const saveProduct = () => {
-    if (!form.name || !form.price) return alert("Nhập đủ thông tin!");
-
-    if (editingProduct) {
-      setProducts(
-        products.map((p) => (p.id === form.id ? form : p))
-      );
-    } else {
-      setProducts([
-        ...products,
-        { ...form, id: Date.now() },
-      ]);
-    }
-
-    setModalOpen(false);
-  };
-
-  const deleteProduct = (id: number) => {
-    if (confirm("Xóa sản phẩm?")) {
-      setProducts(products.filter((p) => p.id !== id));
-    }
-  };
-
+const App: React.FC = () => {
   return (
-    <>
-      <UserInfo username={username} />
+    <div className="app">
+      <header className="header">HỆ THỐNG QUẢN LÝ MÁY CNC</header>
 
-      {/* ===== NAV ===== */}
-      <section className="nav">
-        <button onClick={openAddModal} id="add">
-          <FontAwesomeIcon icon={faPlus} /> Thêm sản phẩm
-        </button>
-
-        <select onChange={(e) => handleSort(e.target.value)}>
-          <option value="new">Mới nhất</option>
-          <option value="az">A - Z</option>
-          <option value="za">Z - A</option>
-        </select>
-
-        <input
-          placeholder="Nhập tên sản phẩm"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        />
-
-        <button onClick={handleSearch} id="searchPro">
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
-        </button>
-      </section>
-
-      {/* ===== TABLE ===== */}
-      <table className="my-table">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th>ID</th>
-            <th>Tên</th>
-            <th>Ảnh</th>
-            <th>Giá</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((p, i) => (
-            <tr key={p.id}>
-              <td>{i + 1}</td>
-              <td>{p.id}</td>
-              <td>{p.name}</td>
-              <td><img src={p.image} width={50} /></td>
-              <td>{p.price.toLocaleString()} VND</td>
-              <td>{p.status}</td>
-              <td>
-                <button onClick={() => openEditModal(p)} id="edit">
-                  <FontAwesomeIcon icon={faPenToSquare} /> edit
-                </button>
-                <button onClick={() => deleteProduct(p.id)} id="delete">
-                  <FontAwesomeIcon icon={faTrashCan} /> delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* ===== MODAL ===== */}
-      {modalOpen && (
-        <div className="modal">
-          <div className="modal-box">
-            <h3>{editingProduct ? "Sửa sản phẩm" : "Thêm sản phẩm"}</h3>
-
-            <input
-              placeholder="Tên sản phẩm"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            <input
-              placeholder="Link hình ảnh"
-              value={form.image}
-              onChange={(e) => setForm({ ...form, image: e.target.value })}
-            />
-            <input
-              type="number"
-              placeholder="Giá"
-              value={form.price}
-              onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-            />
-
-            <div className="modal-actions">
-              <button onClick={saveProduct}>Lưu</button>
-              <button onClick={() => setModalOpen(false)}>
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
-            </div>
-          </div>
+      <main className="container">
+        <UserInfo username={username} />
+        <div className="summary">
+          <div className="card">Tổng máy<br /><b>3</b></div>
+          <div className="card">Đang hoạt động<br /><b>1</b></div>
+          <div className="card">Cảnh báo<br /><b>1</b></div>
+          <div className="card">Ngưng<br /><b>1</b></div>
         </div>
-      )}
-    </>
+
+        <h2>Danh sách máy CNC</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Mã máy</th>
+              <th>Trạng thái</th>
+              <th>Công suất</th>
+              <th>Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody>
+            {machines.map((m) => (
+              <tr key={m.id}>
+                <td>{m.id}</td>
+                <td className={
+                  m.status === "Hoạt động"
+                    ? "running"
+                    : m.status === "Cảnh báo"
+                      ? "warning"
+                      : "stopped"
+                }>
+                  {m.status}
+                </td>
+                <td>{m.power}%</td>
+                <td>{m.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </main>
+
+      <footer className="footer">Dự án demo CNC – React + TypeScript</footer>
+    </div>
   );
 };
 
-export default Machine;
+export default App;
