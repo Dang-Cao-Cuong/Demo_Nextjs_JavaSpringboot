@@ -17,6 +17,7 @@ export * from"./machine/machineResponse";
 export * from"./machine/machineStatus";
 export * from"./machine/machineTable";
 export* from"./machine/updateMachineDTO";
+export * from './machine/MachineErrorNotification';
 
 export* from"./user/User";
 export* from"./user/UserCreateRequest";

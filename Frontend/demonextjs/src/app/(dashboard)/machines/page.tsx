@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, Button, Spin } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -8,6 +8,7 @@ import { useMachines } from '@/hooks/useMachine';
 import MachineList from '@/components/machines/MachineList';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
 import { Machine } from '@/types';
+import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
 
 export default function MachinesPage() {
   const router = useRouter();
@@ -26,13 +27,13 @@ export default function MachinesPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
 
-  const handlePageChange = (page: number, pageSize: number) => {
-    setFilters({ ...filters, page, size: pageSize });
-  };
+  const handlePageChange = useCallback((page: number, pageSize: number) => {
+    setFilters((prev) => ({ ...prev, page, size: pageSize }));
+  }, []);
 
-  const handleFilterChange = (newFilters: any) => {
-    setFilters({ ...filters, ...newFilters, page: 0 });
-  };
+  const handleFilterChange = useCallback((newFilters: any) => {
+    setFilters((prev) => ({ ...prev, ...newFilters, page: 0 }));
+  }, []);
 
   const handleEdit = (machine: Machine) => {
     router.push(`/machines/${machine.id}/edit`);
@@ -67,49 +68,52 @@ export default function MachinesPage() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      {/* Header */}
-      <Card style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Quản lý Máy móc</h1>
-            <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-              Quản lý thông tin máy móc trong hệ thống
-            </p>
+    <>
+      <MachineErrorListener />
+      <div style={{ padding: '24px' }}>
+        {/* Header */}
+        <Card style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Quản lý Máy móc</h1>
+              <p style={{ margin: '8px 0 0 0', color: '#666' }}>
+                Quản lý thông tin máy móc trong hệ thống
+              </p>
+            </div>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              size="large"
+              onClick={() => router.push('/machines/new')}
+            >
+              Tạo máy mới
+            </Button>
           </div>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            size="large"
-            onClick={() => router.push('/machines/new')}
-          >
-            Tạo máy mới
-          </Button>
-        </div>
-      </Card>
+        </Card>
 
-      {/* Machine List */}
-      <MachineList
-        machines={machines}
-        totalPages={totalPages}
-        currentPage={currentPage}
-        totalElements={totalElements}
-        pageSize={filters.size || 10}
-        onPageChange={handlePageChange}
-        onEdit={handleEdit}
-        onDelete={handleDeleteClick}
-        onFilterChange={handleFilterChange}
-        onView={handleView}
-      />
+        {/* Machine List */}
+        <MachineList
+          machines={machines}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          totalElements={totalElements}
+          pageSize={filters.size || 10}
+          onPageChange={handlePageChange}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+          onFilterChange={handleFilterChange}
+          onView={handleView}
+        />
 
-      {/* Delete Dialog */}
-      <MachineDeleteDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleDeleteConfirm}
-        machineName={selectedMachine?.name || ''}
-        loading={isDeleting}
-      />
-    </div>
+        {/* Delete Dialog */}
+        <MachineDeleteDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onConfirm={handleDeleteConfirm}
+          machineName={selectedMachine?.name || ''}
+          loading={isDeleting}
+        />
+      </div>
+    </>
   );
 }

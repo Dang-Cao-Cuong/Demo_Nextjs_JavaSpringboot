@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input, Button, Select, Card } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 
@@ -16,24 +16,23 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
     status: '',
   });
 
-  const handleFilterChange = (key: string, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-  };
-
-  const handleApplyFilters = () => {
+  // Auto-apply filters when they change
+  useEffect(() => {
     onFilterChange(filters);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const handleResetFilters = () => {
-    const resetFilters = {
+    setFilters({
       name: '',
       model: '',
       location: '',
       status: '',
-    };
-    setFilters(resetFilters);
-    onFilterChange(resetFilters);
+    });
   };
 
   return (
@@ -75,18 +74,15 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
             { label: 'Hoạt động', value: 'ACTIVE' },
             { label: 'Không hoạt động', value: 'INACTIVE' },
             { label: 'Bảo trì', value: 'MAINTENANCE' },
-            { label: 'LỖI', value: 'ERROR' },
+            { label: 'Lỗi', value: 'ERROR' },
           ]}
         />
       </div>
 
       {/* Action Buttons */}
       <div style={{ display: 'flex', gap: '8px' }}>
-        <Button type="primary" icon={<SearchOutlined />} onClick={handleApplyFilters}>
-          Áp dụng
-        </Button>
         <Button icon={<ReloadOutlined />} onClick={handleResetFilters}>
-          Reset
+          Reset bộ lọc
         </Button>
       </div>
     </Card>

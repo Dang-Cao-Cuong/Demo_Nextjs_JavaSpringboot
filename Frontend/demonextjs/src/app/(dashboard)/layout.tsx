@@ -5,6 +5,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Spin, Button, Space } from 'antd';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/auth-context';
+import { WebSocketProvider } from '@/providers/WebSocketProvider';
+import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
 
 // BIẾN TẠM THỜI CHO DEVELOPMENT: Đặt true để bỏ qua authentication
 const SKIP_AUTH_IN_DEV = false; // Đổi thành true để tắt authentication trong development
@@ -55,10 +57,14 @@ export default function DashboardLayout({
   };
 
   return (
+        <WebSocketProvider>
     <div style={{ 
       minHeight: '100vh',
       backgroundColor: '#f5f5f5'
     }}>
+      {/* Listener cho lỗi máy */}
+      <MachineErrorListener />
+      
       {/* Header with Logout Button */}
       <div style={{
         backgroundColor: '#ffffff',
@@ -103,5 +109,6 @@ export default function DashboardLayout({
         {children}
       </div>
     </div>
+    </WebSocketProvider>
   );
 }
