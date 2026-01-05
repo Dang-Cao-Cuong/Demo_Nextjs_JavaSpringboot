@@ -30,11 +30,36 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     queryFn: () => machinesApi.getAllMachines(),
   });
 
+  // Apply filters
+  const filteredMachines = allMachines ? allMachines.filter((machine) => {
+    // Filter by name
+    if (filters.name && !machine.name.toLowerCase().includes(filters.name.toLowerCase())) {
+      return false;
+    }
+    
+    // Filter by model
+    if (filters.model && !machine.model.toLowerCase().includes(filters.model.toLowerCase())) {
+      return false;
+    }
+    
+    // Filter by location
+    if (filters.location && !machine.location.toLowerCase().includes(filters.location.toLowerCase())) {
+      return false;
+    }
+    
+    // Filter by status
+    if (filters.status && machine.status !== filters.status) {
+      return false;
+    }
+    
+    return true;
+  }) : [];
+
   // Client-side pagination
-  const paginatedMachines = allMachines ? allMachines.slice(
+  const paginatedMachines = filteredMachines.slice(
     filters.page! * filters.size!,
     (filters.page! + 1) * filters.size!
-  ) : [];
+  );
 
   // Create machine
   const createMutation = useMutation({
@@ -75,8 +100,8 @@ export function useMachines(initialFilters?: MachineFilterParams) {
 
   return {
     machines: paginatedMachines,
-    totalPages: allMachines ? Math.ceil(allMachines.length / (filters.size || 10)) : 0,
-    totalElements: allMachines?.length || 0,
+    totalPages: filteredMachines ? Math.ceil(filteredMachines.length / (filters.size || 10)) : 0,
+    totalElements: filteredMachines?.length || 0,
     currentPage: filters.page || 0,
     isLoading,
     isError,
