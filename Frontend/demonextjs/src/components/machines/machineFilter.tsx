@@ -75,7 +75,7 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
             { label: 'Hoạt động', value: 'ACTIVE' },
             { label: 'Không hoạt động', value: 'INACTIVE' },
             { label: 'Bảo trì', value: 'MAINTENANCE' },
-            { label: 'Ngừng hoạt động', value: 'RETIRED' },
+            { label: 'LỖI', value: 'ERROR' },
           ]}
         />
       </div>

@@ -1,4 +1,5 @@
 import { apiClient } from '../axios';
+import { ApiResponse } from '@/types';
 
 export interface LoginRequest {
   username: string;
@@ -12,22 +13,18 @@ export interface LoginResponse {
   expiresIn: number;
 }
 
-// Backend ApiResponse wrapper
-interface ApiResponse<T> {
-  code: number;
-  message?: string;
-  result: T;
-}
-
 export const authApi = {
   // Đăng nhập
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', credentials);
     console.log('Login response:', response.data);
     
-    // Xử lý cả 2 trường hợp: response có wrapper ApiResponse hoặc không
-    const data = response.data.result || response.data;
-    console.log('Extracted data:', data);
+    // Xử lý response: { code: 1000, result: { accessToken, refreshToken } }
+    if (response.data.code !== 1000 || !response.data.result) {
+      throw new Error(response.data.message || 'Invalid response: missing tokens');
+    }
+    
+    const data = response.data.result;
     
     if (!data.accessToken || !data.refreshToken) {
       console.error('Invalid response structure:', response.data);
@@ -49,7 +46,11 @@ export const authApi = {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', { refreshToken });
     console.log('Refresh response:', response.data);
     
-    const data = response.data.result || response.data;
+    if (response.data.code !== 1000 || !response.data.result) {
+      throw new Error(response.data.message || 'Invalid refresh response');
+    }
+    
+    const data = response.data.result;
     
     if (!data.accessToken) {
       console.error('Invalid refresh response:', response.data);
@@ -61,4 +62,3 @@ export const authApi = {
 };
 
 export default authApi;
-

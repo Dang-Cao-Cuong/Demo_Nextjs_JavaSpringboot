@@ -3,7 +3,7 @@ export interface Machine {
   name: string;
   model: string;
   location: string;
-  status: 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE' | 'RETIRED';
+  status: 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE' | 'ERROR';
   manufactureYear: number;
   createdAt?: string;
   updatedAt?: string;

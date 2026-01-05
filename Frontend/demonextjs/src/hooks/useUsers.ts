@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersApi } from '@/services/api/users.api';
+import { usersApi } from '@/services/users/usersApi';
 import { UserCreateRequest, UserUpdateRequest } from '@/types';
 import { message } from 'antd';
 

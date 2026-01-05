@@ -6,7 +6,7 @@ export const getCurrentUser = async (): Promise<ApiResponse<User>> => {
         const response = await api.get('/auth/me');
         return {
             success: true,
-            data: response.data,
+            result: response.data,
         };
     } catch (error: any) {
         return {

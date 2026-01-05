@@ -5,14 +5,14 @@ export const register = async (data: RegisterForm): Promise<ApiResponse<AuthResp
     try {
         const response = await api.post('/auth/register', data);
         return {
-            success: true,
-            data: response.data,
+            code: 1000,
+            result: response.data,
             message: 'Đăng ký thành công',
         };
     } catch (error: any) {
         return {
-            success: false,
-            error: error.response?.data?.message || 'Đăng ký thất bại',
+            code: error.response?.status || 500,
+            message: error.response?.data?.message || 'Đăng ký thất bại',
         };
     }
 };

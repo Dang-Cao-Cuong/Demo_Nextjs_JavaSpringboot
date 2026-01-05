@@ -1,5 +1,5 @@
 import { apiClient } from '../axios';
-import { Role, RoleCreateRequest } from '@/types/role/Role';
+import { Role, RoleCreateRequest } from '@/types';
 
 export const rolesApi = {
   // Lấy danh sách roles
