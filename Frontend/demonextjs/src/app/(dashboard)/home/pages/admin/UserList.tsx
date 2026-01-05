@@ -1,6 +1,6 @@
-// src/pages/admin/UserList.tsx
+
 import { useEffect, useState } from "react";
-import { getUsers, deleteUser } from "../api/userApi";
+import { getUsers, deleteUser } from "../../api/userApi";
 
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
