@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { authApi, LoginRequest } from '@/services/auth/authApi';
 import { usersApi } from '@/services/users/usersApi';
 import { User, UserCreateRequest } from '@/types';
+import { tokenService } from '@/services/auth/tokenService';
+import { refreshTokenService } from '@/services/auth/refreshTokenService';
 
 interface AuthContextType {
   user: User | null;
@@ -27,16 +29,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const loadUser = async () => {
       if (typeof window !== 'undefined') {
-        const accessToken = localStorage.getItem('access_token');
+        const hasTokens = tokenService.hasTokens();
         
-        if (accessToken) {
+        if (hasTokens) {
           try {
             const userData = await usersApi.getMyInfo();
             setUser(userData);
           } catch (error) {
             console.error('Error loading user:', error);
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            tokenService.clearTokens();
           }
         }
       }
@@ -49,9 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (credentials: LoginRequest) => {
     const response = await authApi.login(credentials);
     
-    // Save tokens to localStorage
-    localStorage.setItem('access_token', response.accessToken);
-    localStorage.setItem('refresh_token', response.refreshToken);
+    // Tokens đã được lưu trong authApi.login() qua tokenService
     
     // Wait a bit to ensure localStorage is updated
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -80,15 +79,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await authApi.logout();
+      await authApi.logout(); // Đã xử lý clearTokens và reset trong authApi
     } catch (error) {
       console.error('Logout error:', error);
     }
     
     setUser(null);
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    
     router.push('/login');
   };
 

@@ -7,6 +7,10 @@ export * from "./auth/AuthState";
 export * from"./auth/AuthToken";
 export * from "./auth/AuthActions";
 export * from"./auth/authStore";
+export * from"./auth/TokenResponse";
+export * from"./auth/BackendResponse";
+export * from"./auth/LoginRequest";
+export * from "./auth/LoginResponse";
 
 
 export * from"./machine/createMachineDTO";

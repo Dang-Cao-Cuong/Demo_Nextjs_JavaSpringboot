@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { websocketService } from '@/services/websocket/websocketService';
+import { tokenService } from '@/services/auth/tokenService';
 import { message } from 'antd';
 
 interface WebSocketContextValue {
@@ -29,8 +30,8 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
 
   const connect = async () => {
     try {
-      // Lấy token từ localStorage hoặc cookie
-      const token = localStorage.getItem('accessToken');
+      // Lấy token sử dụng tokenService
+      const token = tokenService.getAccessToken();
       
       if (!token) {
         console.error(' Không tìm thấy token');
