@@ -19,7 +19,7 @@ const getStatusColor = (status: string) => {
       return 'default';
     case 'MAINTENANCE':
       return 'warning';
-    case 'RETIRED':
+    case 'ERROR':
       return 'error';
     default:
       return 'default';

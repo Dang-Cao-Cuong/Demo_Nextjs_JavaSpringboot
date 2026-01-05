@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://10.60.243.54:8080/cnc/v1';
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -55,14 +55,22 @@ apiClient.interceptors.response.use(
 
         console.log('Refresh token response:', response.data);
         
-        // Backend trả về ApiResponse wrapper: { code, message, result: { accessToken, refreshToken } }
-        // Hoặc có thể trực tiếp { accessToken, refreshToken }
-        const data = response.data.result || response.data;
-        const accessToken = data.accessToken;
+        // Backend trả về: { code: 1000, result: { accessToken, refreshToken } }
+        const responseData = response.data;
+        
+        let accessToken: string;
+        if (responseData.code === 1000 && responseData.result) {
+          accessToken = responseData.result.accessToken;
+        } else if (responseData.accessToken) {
+          // Fallback: direct response
+          accessToken = responseData.accessToken;
+        } else {
+          console.error('No accessToken in refresh response:', response.data);
+          throw new Error(responseData.message || 'Invalid refresh token response');
+        }
         
         if (!accessToken) {
-          console.error('No accessToken in refresh response:', response.data);
-          throw new Error('Invalid refresh token response');
+          throw new Error('Invalid refresh token response: missing accessToken');
         }
         
         localStorage.setItem('access_token', accessToken);

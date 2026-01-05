@@ -56,7 +56,14 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                     Quay lại
                 </Button>
                 <Empty
-                    description="Không tìm thấy máy hoặc đã xảy ra lỗi."
+                    description={
+                        <>
+                            <div>Không tìm thấy máy hoặc đã xảy ra lỗi.</div>
+                            <div style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
+                                Có thể do dữ liệu không tương thích. Vui lòng liên hệ quản trị viên.
+                            </div>
+                        </>
+                    }
                     style={{ marginTop: '40px' }}
                 >
                     <Button type="primary" onClick={() => router.push('/machines')}>

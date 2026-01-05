@@ -21,3 +21,6 @@ export* from"./machine/updateMachineDTO";
 export* from"./user/User";
 export* from"./user/UserCreateRequest";
 export* from"./user/UserUpdateRequest";
+
+export * from"./role/Role";
+export * from"./role/RoleCreateRequest";

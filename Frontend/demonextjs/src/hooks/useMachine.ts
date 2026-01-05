@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { machinesApi } from '@/services/api/machines.api';
+import { machinesApi } from '@/services/machines/machineApi';
 import {
   Machine,
   MachineCreateRequest,
@@ -20,15 +20,21 @@ export function useMachines(initialFilters?: MachineFilterParams) {
 
   // Fetch machines
   const {
-    data: machinesResponse,
+    data: allMachines,
     isLoading,
     isError,
     error,
     refetch,
   } = useQuery({
-    queryKey: ['machines', filters],
-    queryFn: () => machinesApi.getAllMachines(filters),
+    queryKey: ['machines'],
+    queryFn: () => machinesApi.getAllMachines(),
   });
+
+  // Client-side pagination
+  const paginatedMachines = allMachines ? allMachines.slice(
+    filters.page! * filters.size!,
+    (filters.page! + 1) * filters.size!
+  ) : [];
 
   // Create machine
   const createMutation = useMutation({
@@ -38,7 +44,7 @@ export function useMachines(initialFilters?: MachineFilterParams) {
       message.success('Tạo máy thành công');
     },
     onError: (error: any) => {
-      message.error(error?.response?.data?.message || 'Tạo máy thất bại');
+      message.error(error?.message || 'Tạo máy thất bại');
     },
   });
 
@@ -51,7 +57,7 @@ export function useMachines(initialFilters?: MachineFilterParams) {
       message.success('Cập nhật máy thành công');
     },
     onError: (error: any) => {
-      message.error(error?.response?.data?.message || 'Cập nhật máy thất bại');
+      message.error(error?.message || 'Cập nhật máy thất bại');
     },
   });
 
@@ -63,15 +69,15 @@ export function useMachines(initialFilters?: MachineFilterParams) {
       message.success('Xóa máy thành công');
     },
     onError: (error: any) => {
-      message.error(error?.response?.data?.message || 'Xóa máy thất bại');
+      message.error(error?.message || 'Xóa máy thất bại');
     },
   });
 
   return {
-    machines: machinesResponse?.content || [],
-    totalPages: machinesResponse?.totalPages || 0,
-    totalElements: machinesResponse?.totalElements || 0,
-    currentPage: machinesResponse?.number || 0,
+    machines: paginatedMachines,
+    totalPages: allMachines ? Math.ceil(allMachines.length / (filters.size || 10)) : 0,
+    totalElements: allMachines?.length || 0,
+    currentPage: filters.page || 0,
     isLoading,
     isError,
     error,

@@ -77,7 +77,7 @@ export default function MachineForm({ machine, onSubmit, isLoading }: MachineFor
           <Option value="ACTIVE">Active</Option>
           <Option value="INACTIVE">Inactive</Option>
           <Option value="MAINTENANCE">Maintenance</Option>
-          <Option value="RETIRED">Retired</Option>
+          <Option value="ERROR">Error</Option>
         </Select>
       </Form.Item>
 

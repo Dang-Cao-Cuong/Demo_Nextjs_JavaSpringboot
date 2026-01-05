@@ -5,14 +5,14 @@ export const login = async (credentials: LoginForm): Promise<ApiResponse<AuthRes
     try {
         const response = await api.post('/auth/login', credentials);
         return {
-            success: true,
-            data: response.data,
+            code: 1000,
+            result: response.data,
             message: 'Đăng nhập thành công',
         };
     } catch (error: any) {
         return {
-            success: false,
-            error: error.response?.data?.message || 'Đăng nhập thất bại',
+            code: error.response?.status || 500,
+            message: error.response?.data?.message || 'Đăng nhập thất bại',
         };
     }
 };
