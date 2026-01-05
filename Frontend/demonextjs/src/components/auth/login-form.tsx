@@ -6,7 +6,7 @@ import { Form, Input, Button, Card, Alert, Typography, Divider, App } from 'antd
 import { UserOutlined, LockOutlined, LoginOutlined, LoadingOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
-import { LoginRequest } from '@/services/api/auth.api';
+import { LoginRequest } from '@/services/auth/authApi';
 
 const { Title, Text } = Typography;
 
@@ -98,7 +98,7 @@ export function LoginForm() {
           name="password"
           rules={[
             { required: true, message: 'Vui lòng nhập mật khẩu' },
-            { min: 6, message: "Mật khẩu có ít nhất 6 ký tự" },
+            { min: 4, message: "Mật khẩu có ít nhất 4 ký tự" },
           ]}
         >
           <Input.Password

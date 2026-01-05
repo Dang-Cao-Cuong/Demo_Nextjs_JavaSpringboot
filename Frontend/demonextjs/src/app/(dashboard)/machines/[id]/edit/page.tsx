@@ -36,7 +36,23 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
   if (!machine) {
     return (
       <div style={{ padding: '24px' }}>
-        <Empty description="Không tìm thấy máy" />
+        <Button
+          icon={<ArrowLeftOutlined />}
+          onClick={() => router.back()}
+          style={{ marginBottom: '16px' }}
+        >
+          Quay lại
+        </Button>
+        <Empty 
+          description={
+            <>
+              <div>Không tìm thấy máy</div>
+              <div style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
+                Có thể do dữ liệu không tương thích với hệ thống
+              </div>
+            </>
+          } 
+        />
       </div>
     );
   }

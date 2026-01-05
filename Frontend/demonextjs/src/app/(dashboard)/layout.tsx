@@ -7,7 +7,7 @@ import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/auth-context';
 
 // BIẾN TẠM THỜI CHO DEVELOPMENT: Đặt true để bỏ qua authentication
-const SKIP_AUTH_IN_DEV = true; // Đổi thành true để tắt authentication trong development
+const SKIP_AUTH_IN_DEV = false; // Đổi thành true để tắt authentication trong development
 
 export default function DashboardLayout({
   children,

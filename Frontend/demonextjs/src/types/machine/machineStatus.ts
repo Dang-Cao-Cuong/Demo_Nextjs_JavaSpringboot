@@ -1,4 +1,4 @@
-export type MachineStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE' | 'RETIRED';
+export type MachineStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE' | 'ERROR';
 
 export const MACHINE_STATUS_CONFIG: Record<
   MachineStatus,
@@ -22,7 +22,7 @@ export const MACHINE_STATUS_CONFIG: Record<
     bgColor: 'bg-blue-100',
     chartColor: '#3b82f6',
   },
-  RETIRED: {
+  ERROR: {
     label: 'Ngừng hoạt động',
     color: 'text-red-700',
     bgColor: 'bg-red-100',

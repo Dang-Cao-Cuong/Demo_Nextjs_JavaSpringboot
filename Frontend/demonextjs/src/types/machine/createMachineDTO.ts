@@ -3,5 +3,5 @@ export interface CreateMachineDTO {
   model: string;
   manufactureYear: number;
   location: string;
-  status: 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE' | 'RETIRED';
+  status: 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE' | 'ERROR';
 }
