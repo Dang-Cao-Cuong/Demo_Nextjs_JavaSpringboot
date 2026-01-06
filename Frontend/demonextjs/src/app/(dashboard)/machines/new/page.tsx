@@ -32,7 +32,7 @@ export default function NewMachinePage() {
         </Button>
         <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{t('machine.create_button')}</h1>
         <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-          {t('machine.lable.subtitle')}
+          {t('machine.label.subtitle')}
         </p>
       </div>
 

@@ -3,7 +3,7 @@
 import { Form, Input, Select, Button, InputNumber, Space } from 'antd';
 import { Machine, MachineCreateRequest } from '@/types';
 import { useEffect } from 'react';
-
+import { useTranslation } from 'react-i18next';
 const { Option } = Select;
 
 interface MachineFormProps {
@@ -14,7 +14,7 @@ interface MachineFormProps {
 
 export default function MachineForm({ machine, onSubmit, isLoading }: MachineFormProps) {
   const [form] = Form.useForm();
-
+const { t } = useTranslation();
   useEffect(() => {
     if (machine) {
       form.setFieldsValue({
@@ -45,52 +45,52 @@ export default function MachineForm({ machine, onSubmit, isLoading }: MachineFor
       }}
     >
       <Form.Item
-        label="Tên máy"
+        label={t('machine.label.name')}
         name="name"
-        rules={[{ required: true, message: 'Vui lòng nhập tên máy' }]}
+        rules={[{ required: true, message: t('machine.form.validation.required', { field: t('machine.label.name') }) }]}
       >
-        <Input placeholder="Nhập tên máy" size="large" />
+        <Input placeholder={t('machine.form.placeholder.name')} size="large" />
       </Form.Item>
 
       <Form.Item
         label="Model"
         name="model"
-        rules={[{ required: true, message: 'Vui lòng nhập model' }]}
+        rules={[{ required: true, message: t('machine.form.validation.required', { field: t('machine.form.model') }) }]}
       >
         <Input placeholder="Nhập model" size="large" />
       </Form.Item>
 
       <Form.Item
-        label="Vị trí"
+        label={t('machine.label.location').replace(':', '')}
         name="location"
-        rules={[{ required: true, message: 'Vui lòng nhập vị trí' }]}
+        rules={[{ required: true, message: t('machine.form.validation.required', { field: t('machine.label.location').replace(':', '') }) }]}
       >
-        <Input placeholder="Nhập vị trí" size="large" />
+        <Input placeholder={t('machine.form.placeholder.location')} size="large" />
       </Form.Item>
 
       <Form.Item
-        label="Trạng thái"
+        label={t('machine.status')}
         name="status"
-        rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+        rules={[{ required: true, message: t('machine.form.validation.status_required') }]}
       >
-        <Select placeholder="Chọn trạng thái" size="large">
-          <Option value="ACTIVE">Active</Option>
-          <Option value="INACTIVE">Inactive</Option>
-          <Option value="MAINTENANCE">Maintenance</Option>
-          <Option value="ERROR">Error</Option>
+        <Select placeholder={t('machine.form.placeholder.status')} size="large">
+          <Option value="ACTIVE">{t('machine.label.status.ACTIVE')}</Option>
+          <Option value="INACTIVE">{t('machine.label.status.INACTIVE')}</Option>
+          <Option value="MAINTENANCE">{t('machine.label.status.MAINTENANCE')}</Option>
+          <Option value="ERROR">{t('machine.label.status.ERROR')}</Option>
         </Select>
       </Form.Item>
 
       <Form.Item
-        label="Năm sản xuất"
+        label={t('machine.label.manufacturing_year').replace(':', '')}
         name="manufactureYear"
         rules={[
-          { required: true, message: 'Vui lòng nhập năm sản xuất' },
-          { type: 'number', min: 1900, max: new Date().getFullYear(), message: 'Năm không hợp lệ' }
+          { required: true, message: t('machine.form.validation.required', { field: t('machine.label.manufacturing_year').replace(':', '') }) },
+          { type: 'number', min: 1900, max: new Date().getFullYear(), message: t('machine.form.validation.year_range') }
         ]}
       >
         <InputNumber
-          placeholder="Nhập năm sản xuất"
+          placeholder={t('machine.form.placeholder.manufacture_year')}
           style={{ width: '100%' }}
           size="large"
         />
@@ -99,10 +99,10 @@ export default function MachineForm({ machine, onSubmit, isLoading }: MachineFor
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit" loading={isLoading} size="large">
-            {machine ? 'Cập nhật' : 'Tạo mới'}
+            {machine ? t('machine.form.button.update') : t('machine.form.button.create')}
           </Button>
           <Button htmlType="reset" size="large">
-            Đặt lại
+            {t('machine.form.button.reset')}
           </Button>
         </Space>
       </Form.Item>

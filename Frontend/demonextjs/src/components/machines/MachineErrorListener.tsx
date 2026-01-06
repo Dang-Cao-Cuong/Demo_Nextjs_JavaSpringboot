@@ -13,18 +13,18 @@ export const MachineErrorListener = () => {
 
   const queryClient = useQueryClient();
   const lastNotificationRef = useRef<{ [key: string]: number }>({});
-  const { t } = useTranslation(); // ✅ Thêm hook translation
+  const { t } = useTranslation(); 
 
   const handleError = useCallback(
     (error: MachineErrorNotification) => {
-      console.log('🔔 Nhận cảnh báo lỗi máy:', error);
+      console.log(' Nhận cảnh báo lỗi máy:', error);
 
       const now = Date.now();
       const lastTime = lastNotificationRef.current[error.machineId] || 0;
 
       // Debounce: Bỏ qua nếu cùng máy trong vòng 3 giây
       if (now - lastTime < 3000) {
-        console.log('⏭️ Bỏ qua duplicate notification');
+        console.log('⏭ Bỏ qua duplicate notification');
         return;
       }
 
@@ -33,7 +33,7 @@ export const MachineErrorListener = () => {
       const message = error.message || error.errorMessage || t('notification.machineError', { machineName: error.machineName });
       const errorCode = error.errorCode || 'undefined';
 
-      // ✅ Sử dụng translation
+      //  Sử dụng translation
       notification.error({
         message: t('notification.machineError', { machineName: error.machineName }),
         description: t('notification.machineErrorDesc', { message, errorCode }),
@@ -46,9 +46,9 @@ export const MachineErrorListener = () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
       queryClient.invalidateQueries({ queryKey: ['machine', error.machineId] });
 
-      console.log('✅ Đã cập nhật dữ liệu máy');
+      console.log(' Đã cập nhật dữ liệu máy');
     },
-    [queryClient, t] // ✅ Thêm t vào dependencies
+    [queryClient, t] //  Thêm t vào dependencies
   );
   useWebSocket({
     topic: '/topic/errors',
