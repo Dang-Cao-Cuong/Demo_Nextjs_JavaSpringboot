@@ -8,6 +8,9 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import AntdRegistry from "./antd-registry";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { I18nextProvider } from "@/providers/I18nextProvider";
+import { WebSocketProvider } from "@/providers/WebSocketProvider";
+import { MachineErrorListener } from "@/components/machines/MachineErrorListener";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,19 +37,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AntdRegistry>
-          <ThemeProvider>
-            <ErrorBoundary>
-              <QueryProvider>
-                <AuthProvider>
-                  {children}
-                </AuthProvider>
-              </QueryProvider>
-            </ErrorBoundary>
-          </ThemeProvider>
-        </AntdRegistry>
+        <I18nextProvider>
+          <AntdRegistry>
+            <ThemeProvider>
+              <ErrorBoundary>
+                <QueryProvider>
+                  <AuthProvider>
+                    <WebSocketProvider>
+                      <MachineErrorListener />
+                      {children}
+                    </WebSocketProvider>
+                  </AuthProvider>
+                </QueryProvider>
+              </ErrorBoundary>
+            </ThemeProvider>
+          </AntdRegistry>
+        </I18nextProvider>
       </body>
     </html>
   );
 }
-

@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { authApi, LoginRequest } from '@/services/auth/authApi';
+import { authApi, } from '@/services/auth/authApi';
+import { LoginRequest} from '@/types';
 import { usersApi } from '@/services/users/usersApi';
 import { User, UserCreateRequest } from '@/types';
 import { tokenService } from '@/services/auth/tokenService';

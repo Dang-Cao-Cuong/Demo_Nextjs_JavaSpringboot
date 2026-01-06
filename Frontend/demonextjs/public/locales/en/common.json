@@ -1,0 +1,66 @@
+{
+  "app": {
+    "title": "CNC Machine Monitoring System",
+    "description": "CNC Machine Management System"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "machines": "Machines",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "loginSuccess": "Login successful!",
+    "loginError": "Login failed. Please try again.",
+    "usernameRequired": "Please enter username",
+    "passwordRequired": "Please enter password",
+    "passwordMinLength": "Password must be at least 4 characters",
+    "logout": "Logout",
+    "logoutSuccess": "Logged out successfully",
+    "noAccount": "Don't have an account?",
+    "registerNow": "Register now"
+  },
+  "machine": {
+    "status": "Status",
+    "name": "Machine Name",
+    "id": "Machine ID",
+    "errorCode": "Error Code",
+    "errorMessage": "Error Message",
+    "severity": "Severity",
+    "timestamp": "Timestamp",
+    "running": "Running",
+    "idle": "Idle",
+    "error": "Error",
+    "offline": "Offline"
+  },
+  "notification": {
+    "machineError": "Machine Error: {{machineName}}",
+    "machineErrorDesc": "{{message}} (Error Code: {{errorCode}})",
+    "severity": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "or": "or"
+  }
+}
