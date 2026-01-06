@@ -96,7 +96,9 @@
         "create": "Tạo mới",
         "update": "Cập nhật",
         "reset": "Đặt lại"
-      }
+      },
+     
+      "update_subtitle": "Cập nhật thông tin máy {{name}}"
     }
 
   },

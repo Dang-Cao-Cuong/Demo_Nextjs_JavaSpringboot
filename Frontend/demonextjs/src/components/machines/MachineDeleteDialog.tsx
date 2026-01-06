@@ -30,8 +30,8 @@ export default function MachineDeleteDialog({
       open={open}
       onOk={onConfirm}
       onCancel={() => onOpenChange(false)}
-      okText={t('machine.delete')}
-      cancelText={t('machine.cancel')}
+      okText={t('common.delete')}
+      cancelText={t('common.cancel')}
       okButtonProps={{ danger: true, loading }}
     >
       <p>

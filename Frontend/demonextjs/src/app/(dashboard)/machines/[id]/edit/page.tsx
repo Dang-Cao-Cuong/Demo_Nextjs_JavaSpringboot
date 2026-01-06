@@ -7,13 +7,13 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useMachine, useMachines } from '@/hooks/useMachine';
 import MachineForm from '@/components/machines/machineForm';
 import { MachineUpdateRequest } from '@/types';
-
+import { useTranslation } from 'react-i18next';
 export default function EditMachinePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id } = use(params);
   const { machine, isLoading } = useMachine(id);
   const { updateMachine, isUpdating } = useMachines();
-
+  const { t } = useTranslation();
   const handleSubmit = (data: MachineUpdateRequest) => {
     updateMachine(
       { id, data },
@@ -28,7 +28,7 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-        <Spin size="large" />
+        <Spin size="large" tip={t('common.loading')} />
       </div>
     );
   }
@@ -41,14 +41,14 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
           onClick={() => router.back()}
           style={{ marginBottom: '16px' }}
         >
-          Quay lại
+         {t('common.back')}
         </Button>
         <Empty 
           description={
             <>
-              <div>Không tìm thấy máy</div>
+              <div>{t('machine.label.not_found_title')}</div>
               <div style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
-                Có thể do dữ liệu không tương thích với hệ thống
+                {t('machine.label.not_found_desc')}
               </div>
             </>
           } 
@@ -66,11 +66,11 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
           onClick={() => router.back()}
           style={{ marginBottom: '16px' }}
         >
-          Quay lại
+          {t('common.back')}
         </Button>
-        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Chỉnh sửa máy</h1>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{t('machine.form.update_title')}</h1>
         <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-          Cập nhật thông tin máy {machine.name}
+         {t('machine.form.update_subtitle', { name: machine.name })}
         </p>
       </div>
 
