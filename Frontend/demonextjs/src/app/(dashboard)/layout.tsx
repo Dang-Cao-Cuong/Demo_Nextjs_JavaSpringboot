@@ -3,7 +3,12 @@
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Spin, Button, Space } from 'antd';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  AppstoreOutlined
+} from '@ant-design/icons';
 import { useAuth } from '@/contexts/auth-context';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
 import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
@@ -80,7 +85,23 @@ export default function DashboardLayout({
               {t('app.description')}
             </h2>
           </div>
+          <Space size="small">
+            <Button
+              type={pathname === '/' ? 'primary' : 'text'}
+              icon={<HomeOutlined />}
+              onClick={() => router.push('/home')}
+            >
+              {t('nav.dashboard')}
+            </Button>
 
+            <Button
+              type={pathname.startsWith('/machines') ? 'primary' : 'text'}
+              icon={<AppstoreOutlined />}
+              onClick={() => router.push('/machines')}
+            >
+              {t('nav.machines')}
+            </Button>
+          </Space>
           <Space size="middle">
             <LanguageSwitcher />
             {user && (
