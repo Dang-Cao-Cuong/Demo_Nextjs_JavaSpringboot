@@ -36,7 +36,45 @@
     "running": "Running",
     "idle": "Idle",
     "error": "Error",
-    "offline": "Offline"
+    "offline": "Offline",
+    "title": "Machine Management",
+    "description": "Manage machine information in the system",
+    "create_button": "Create New Machine",
+    "empty_list": "No machines available",
+    "total_count": "Total {{total}} machines",
+    "label": {
+      "name": "Machine Name",
+      "created_at": "Created Date",
+      "updated_at": "Last Updated",
+      "location": "Location:",
+      "title": "Machine Information",
+      "loading": "Loading machine information...",
+      "not_found_title": "Machine not found or an error occurred.",
+      "not_found_desc": "Data might be incompatible. Please contact administrator.",
+      "back_to_list": "Back to Machine List",
+      "manufacturing_year": "Manufacturing Year:",
+      "subtitle": "Enter information to create a new machine",
+      "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "MAINTENANCE": "Maintenance",
+      "ERROR": "Error"
+    }
+    },
+    "delete_confirm": {
+      "title": "Confirm Deletion",
+      "message": "Are you sure you want to delete this machine?",
+      "warning": "This action cannot be undone"
+    },
+    "filter": {
+      "title": "Filter",
+      "search_name": "Search by name",
+      "search_model": "Search by model",
+      "search_location": "Search by location",
+      "select_status": "Select status",
+      "all_statuses": "All",
+      "reset": "Reset filter"
+    }
   },
   "notification": {
     "machineError": "Machine Error: {{machineName}}",
@@ -49,6 +87,7 @@
     }
   },
   "common": {
+    "back": "Back",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",

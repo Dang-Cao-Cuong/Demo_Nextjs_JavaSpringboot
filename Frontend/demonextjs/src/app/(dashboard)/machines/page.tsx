@@ -9,9 +9,10 @@ import MachineList from '@/components/machines/MachineList';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
 import { Machine } from '@/types';
 import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
-
+import { useTranslation } from 'react-i18next';
 export default function MachinesPage() {
   const router = useRouter();
+     const { t } = useTranslation();
   const {
     machines,
     totalPages,
@@ -66,7 +67,7 @@ export default function MachinesPage() {
       </div>
     );
   }
-
+ 
   return (
     <>
       <MachineErrorListener />
@@ -75,9 +76,10 @@ export default function MachinesPage() {
         <Card style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Quản lý Máy móc</h1>
+              <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{t('machine.title')}</h1>
               <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-                Quản lý thông tin máy móc trong hệ thống
+                {t('machine.description')}
+                
               </p>
             </div>
             <Button
@@ -86,7 +88,7 @@ export default function MachinesPage() {
               size="large"
               onClick={() => router.push('/machines/new')}
             >
-              Tạo máy mới
+              {t('machine.create_button')}
             </Button>
           </div>
         </Card>

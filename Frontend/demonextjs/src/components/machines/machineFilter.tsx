@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Input, Button, Select, Card } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
-
+import { useTranslation } from 'react-i18next';
 interface MachineFilterProps {
   onFilterChange: (filters: any) => void;
 }
@@ -15,7 +15,7 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
     location: '',
     status: '',
   });
-
+  const { t } = useTranslation();
   // Auto-apply filters when they change
   useEffect(() => {
     onFilterChange(filters);
@@ -34,13 +34,19 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
       status: '',
     });
   };
-
+  const statusOptions = [
+    { label: t('machine.filter.all_statuses'), value: '' },
+    { label: t('machine.label.status.ACTIVE'), value: 'ACTIVE' },
+    { label: t('machine.label.status.INACTIVE'), value: 'INACTIVE' },
+    { label: t('machine.label.status.MAINTENANCE'), value: 'MAINTENANCE' },
+    { label: t('machine.label.status.ERROR'), value: 'ERROR' },
+  ];
   return (
-    <Card title="Bộ lọc" style={{ marginBottom: '16px' }}>
+    <Card title={t('machine.filter.title')} style={{ marginBottom: '16px' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
         {/* Name */}
         <Input
-          placeholder="Tìm theo tên"
+          placeholder={t('machine.filter.search_name')}
           value={filters.name}
           onChange={(e) => handleFilterChange('name', e.target.value)}
           allowClear
@@ -48,7 +54,7 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
 
         {/* Model */}
         <Input
-          placeholder="Tìm theo model"
+          placeholder={t('machine.filter.search_model')}
           value={filters.model}
           onChange={(e) => handleFilterChange('model', e.target.value)}
           allowClear
@@ -56,7 +62,7 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
 
         {/* Location */}
         <Input
-          placeholder="Tìm theo vị trí"
+          placeholder={t('machine.filter.search_location')}
           value={filters.location}
           onChange={(e) => handleFilterChange('location', e.target.value)}
           allowClear
@@ -64,25 +70,19 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
 
         {/* Status */}
         <Select
-          placeholder="Chọn trạng thái"
+          placeholder={t('machine.filter.select_status')}
           value={filters.status || undefined}
           onChange={(value) => handleFilterChange('status', value || '')}
           allowClear
           style={{ width: '100%' }}
-          options={[
-            { label: 'Tất cả', value: '' },
-            { label: 'Hoạt động', value: 'ACTIVE' },
-            { label: 'Không hoạt động', value: 'INACTIVE' },
-            { label: 'Bảo trì', value: 'MAINTENANCE' },
-            { label: 'Lỗi', value: 'ERROR' },
-          ]}
+          options={statusOptions}
         />
       </div>
 
       {/* Action Buttons */}
       <div style={{ display: 'flex', gap: '8px' }}>
         <Button icon={<ReloadOutlined />} onClick={handleResetFilters}>
-          Reset bộ lọc
+          {t('machine.filter.reset')}
         </Button>
       </div>
     </Card>

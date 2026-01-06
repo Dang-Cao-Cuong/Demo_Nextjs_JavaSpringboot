@@ -7,7 +7,8 @@ import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/auth-context';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
 import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
-
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 export default function DashboardLayout({
   children,
 }: {
@@ -16,7 +17,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, loading, logout, user } = useAuth();
-
+  const { t } = useTranslation();
   useEffect(() => {
     // Đợi loading xong mới kiểm tra authentication
     if (!loading && !isAuthenticated) {
@@ -29,10 +30,10 @@ export default function DashboardLayout({
   // Hiển thị loading khi đang kiểm tra authentication
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         backgroundColor: '#ffffff'
       }}>
@@ -52,13 +53,15 @@ export default function DashboardLayout({
 
   return (
     <WebSocketProvider>
-      <div style={{ 
+      <div style={{
         minHeight: '100vh',
         backgroundColor: '#f5f5f5'
-      }}>
+      }}
+      >
+
         {/* Listener cho lỗi máy */}
         <MachineErrorListener />
-        
+
         {/* Header with Logout Button */}
         <div style={{
           backgroundColor: '#ffffff',
@@ -74,24 +77,26 @@ export default function DashboardLayout({
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: '#1890ff' }}>
-              Hệ thống Quản lý Máy CNC
+              {t('app.description')}
             </h2>
           </div>
-          
+
           <Space size="middle">
+            <LanguageSwitcher />
             {user && (
               <span style={{ color: '#666', fontSize: '14px' }}>
                 <UserOutlined style={{ marginRight: '6px' }} />
                 {user.fullname || user.username}
               </span>
             )}
-            <Button 
-              type="primary" 
-              danger 
+
+            <Button
+              type="primary"
+              danger
               icon={<LogoutOutlined />}
               onClick={handleLogout}
             >
-              Đăng xuất
+              {t('auth.logout')}
             </Button>
           </Space>
         </div>
