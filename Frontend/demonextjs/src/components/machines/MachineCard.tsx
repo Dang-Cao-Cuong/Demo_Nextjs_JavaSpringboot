@@ -58,8 +58,8 @@ export default function MachineCard({ machine, onEdit, onDelete, onView }: Machi
         
         <div style={{ color: '#666' }}>
           <div><strong>Model:</strong> {machine.model}</div>
-          <div><strong>{t('machine.label.location')}:</strong> {machine.location}</div>
-          <div><strong>{t('machine.label.manufacturing_year')}:</strong> {machine.manufactureYear}</div>
+          <div><strong>{t('machine.label.location')}</strong> {machine.location}</div>
+          <div><strong>{t('machine.label.manufacturing_year')}</strong> {machine.manufactureYear}</div>
         </div>
       </Space>
     </Card>

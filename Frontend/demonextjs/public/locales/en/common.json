@@ -74,6 +74,29 @@
       "select_status": "Select status",
       "all_statuses": "All",
       "reset": "Reset filter"
+    },
+    "form": {
+      "create_title": "Create New Machine",
+      "update_title": "Update Machine",
+      "model": "Model",
+      "placeholder": {
+        "name": "Enter machine name",
+        "model": "Enter model",
+        "location": "Enter location",
+        "status": "Select status",
+        "manufacture_year": "Enter manufacturing year"
+      },
+      "validation": {
+        "required": "Please enter {{field}}",
+        "status_required": "Please select status",
+        "year_invalid": "Invalid year",
+        "year_range": "Year must be between 1900 and current year"
+      },
+      "button": {
+        "create": "Create",
+        "update": "Update",
+        "reset": "Reset"
+      }
     }
   },
   "notification": {

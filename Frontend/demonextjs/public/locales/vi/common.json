@@ -74,6 +74,29 @@
       "select_status": "Chọn trạng thái",
       "all_statuses": "Tất cả",
       "reset": "Reset bộ lọc"
+    },
+    "form": {
+      "create_title": "Tạo máy mới",
+      "update_title": "Cập nhật máy",
+      "model": "Model",
+      "placeholder": {
+        "name": "Nhập tên máy",
+        "model": "Nhập model",
+        "location": "Nhập vị trí",
+        "status": "Chọn trạng thái",
+        "manufacture_year": "Nhập năm sản xuất"
+      },
+      "validation": {
+        "required": "Vui lòng nhập {{field}}",
+        "status_required": "Vui lòng chọn trạng thái",
+        "year_invalid": "Năm không hợp lệ",
+        "year_range": "Năm phải từ 1900 đến hiện tại"
+      },
+      "button": {
+        "create": "Tạo mới",
+        "update": "Cập nhật",
+        "reset": "Đặt lại"
+      }
     }
 
   },
