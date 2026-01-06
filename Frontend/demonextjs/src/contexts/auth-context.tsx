@@ -59,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Fetch user info after successful login with the new token
     try {
       const userData = await usersApi.getMyInfo();
+      console.log(userData)
       setUser(userData);
       // Không tự động redirect ở đây, để component xử lý
     } catch (error) {
