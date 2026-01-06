@@ -1,0 +1,107 @@
+{
+  "app": {
+    "title": "Hệ thống giám sát máy CNC",
+    "description": "Hệ thống quản lý máy CNC"
+  },
+  "nav": {
+    "dashboard": "Trang chủ",
+    "machines": "Danh sách máy",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "auth": {
+    "login": "Đăng Nhập",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "loginButton": "Đăng nhập",
+    "loggingIn": "Đang đăng nhập...",
+    "loginSuccess": "Đăng nhập thành công!",
+    "loginError": "Đăng nhập thất bại. Vui lòng thử lại.",
+    "usernameRequired": "Vui lòng nhập tên đăng nhập",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "passwordMinLength": "Mật khẩu có ít nhất 4 ký tự",
+    "logout": "Đăng xuất",
+    "logoutSuccess": "Đã đăng xuất",
+    "noAccount": "Chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay"
+  },
+  "machine": {
+    "status": "Trạng thái",
+    "name": "Tên máy",
+    "id": "Mã máy",
+    "errorCode": "Mã lỗi",
+    "errorMessage": "Thông báo lỗi",
+    "severity": "Mức độ",
+    "timestamp": "Thời gian",
+    "running": "Đang chạy",
+    "idle": "Chờ",
+    "error": "Lỗi",
+    "offline": "Ngoại tuyến",
+    "title": "Quản lý Máy móc",
+    "description": "Quản lý thông tin máy móc trong hệ thống",
+    "create_button": "Tạo máy mới",
+    "empty_list": "Không có máy móc nào",
+    "total_count": "Tổng {{total}} máy",
+    "label": {
+      "name": "Tên máy",
+      "created_at": "Ngày tạo",
+      "updated_at": "Cập nhật lần cuối",
+      "location": "Vị trí:",
+      "manufacturing_year": "Năm SX:",
+      "title": "Thông tin máy",
+      "not_found_title": "Không tìm thấy máy hoặc đã xảy ra lỗi.",
+      "not_found_desc": "Có thể do dữ liệu không tương thích. Vui lòng liên hệ quản trị viên.",
+      "back_to_list": "Về danh sách máy",
+      "loading": "Đang tải thông tin máy...",
+      "subtitle": "Nhập thông tin để tạo máy mới",
+      "status": {
+      "ACTIVE": "Hoạt động",
+      "INACTIVE": "Không hoạt động",
+      "MAINTENANCE": "Bảo trì",
+      "ERROR": "Lỗi"
+    }
+    },
+    "delete_confirm": {
+      "title": "Xác nhận xóa",
+      "message": "Bạn có chắc chắn muốn xóa máy?",
+      "warning": "Hành động này không thể hoàn tác"
+    },
+    "filter": {
+      "title": "Bộ lọc",
+      "search_name": "Tìm theo tên",
+      "search_model": "Tìm theo model",
+      "search_location": "Tìm theo vị trí",
+      "select_status": "Chọn trạng thái",
+      "all_statuses": "Tất cả",
+      "reset": "Reset bộ lọc"
+    }
+
+  },
+  "notification": {
+    "machineError": "Lỗi máy: {{machineName}}",
+    "machineErrorDesc": "{{message}} (Mã lỗi: {{errorCode}})",
+    "severity": {
+      "critical": "Nghiêm trọng",
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp"
+    }
+  },
+  
+  "common": {
+    "back": "Quay lại",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "close": "Đóng",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "refresh": "Làm mới",
+    "or": "hoặc"
+  }
+}

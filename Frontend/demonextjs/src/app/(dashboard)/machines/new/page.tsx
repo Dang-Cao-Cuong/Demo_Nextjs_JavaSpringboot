@@ -6,11 +6,11 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useMachines } from '@/hooks/useMachine';
 import MachineForm from '@/components/machines/machineForm';
 import { MachineCreateRequest } from '@/types';
-
+import { useTranslation } from 'react-i18next';
 export default function NewMachinePage() {
   const router = useRouter();
   const { createMachine, isCreating } = useMachines();
-
+  const { t } = useTranslation();
   const handleSubmit = (data: MachineCreateRequest) => {
     createMachine(data, {
       onSuccess: () => {
@@ -28,11 +28,11 @@ export default function NewMachinePage() {
           onClick={() => router.back()}
           style={{ marginBottom: '16px' }}
         >
-          Quay lại
+          {t('common.back')}
         </Button>
-        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Tạo máy mới</h1>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{t('machine.create_button')}</h1>
         <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-          Nhập thông tin để tạo máy mới
+          {t('machine.lable.subtitle')}
         </p>
       </div>
 

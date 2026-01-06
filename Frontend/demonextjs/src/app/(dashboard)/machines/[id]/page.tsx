@@ -19,7 +19,7 @@ import { MachineStatusBadge } from '@/components/machines/machineStatusBadge';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
 import { useMachine } from '@/hooks/useMachine';
 import { useMachines } from '@/hooks/useMachine';
-
+import { useTranslation } from 'react-i18next';
 interface MachineDetailPageProps {
     params: Promise<{ id: string }>;
 }
@@ -30,7 +30,7 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
     const { machine, isLoading, error } = useMachine(id);
     const { deleteMachine, isDeleting } = useMachines();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
+    const { t } = useTranslation();
     const handleDeleteConfirm = () => {
         deleteMachine(id);
         setShowDeleteDialog(false);
@@ -40,12 +40,13 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
     if (isLoading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-                <Spin size="large" tip="Đang tải thông tin máy..." />
+                <Spin size="large" tip={t('machine.label.loading')} />
             </div>
         );
     }
 
     if (error || !machine) {
+        console.log(machine);
         return (
             <div style={{ padding: '24px' }}>
                 <Button
@@ -53,21 +54,21 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                     onClick={() => router.back()}
                     style={{ marginBottom: '16px' }}
                 >
-                    Quay lại
+                    {t('common.back')}
                 </Button>
                 <Empty
                     description={
                         <>
-                            <div>Không tìm thấy máy hoặc đã xảy ra lỗi.</div>
+                            <div>{t('machine.label.not_found_title')}</div>
                             <div style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
-                                Có thể do dữ liệu không tương thích. Vui lòng liên hệ quản trị viên.
+                                {t('machine.label.not_found_desc')}
                             </div>
                         </>
                     }
                     style={{ marginTop: '40px' }}
                 >
                     <Button type="primary" onClick={() => router.push('/machines')}>
-                        Về danh sách máy
+                        {t('machine.label.back_to_list')}
                     </Button>
                 </Empty>
             </div>
@@ -105,14 +106,14 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                         icon={<EditOutlined />}
                         onClick={() => router.push(`/machines/${id}/edit`)}
                     >
-                        Chỉnh sửa
+                        {t('common.edit')}
                     </Button>
                     <Button
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => setShowDeleteDialog(true)}
                     >
-                        Xóa
+                        {t('common.delete')}
                     </Button>
                 </Space>
             </div>
@@ -128,22 +129,22 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                     title={
                         <span>
                             <SettingOutlined style={{ marginRight: '8px' }} />
-                            Thông tin máy
+                            {t('machine.label.title')}
                         </span>
                     }
                     style={{ gridColumn: 'span 2' }}
                 >
                     <Descriptions bordered column={{ xs: 1, sm: 1, md: 2 }}>
-                        <Descriptions.Item label="Tên máy">
+                        <Descriptions.Item label={t('machine.label.name')}>
                             {machine.name}
                         </Descriptions.Item>
                         <Descriptions.Item label="Model">
                             {machine.model}
                         </Descriptions.Item>
-                        <Descriptions.Item label="Năm sản xuất">
+                        <Descriptions.Item label={t('machine.label.manufacturing_year')}>
                             {machine.manufactureYear}
                         </Descriptions.Item>
-                        <Descriptions.Item label="Vị trí">
+                        <Descriptions.Item label={t('machine.label.location')}>
                             <Space>
                                 <EnvironmentOutlined />
                                 {machine.location}
@@ -154,7 +155,7 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                     <Divider />
 
                     <Descriptions bordered column={1} size="small">
-                        <Descriptions.Item label="Ngày tạo">
+                        <Descriptions.Item label={t('machine.label.created_at')}>
                             <Space>
                                 <CalendarOutlined />
                                 {machine.createdAt 
@@ -163,7 +164,7 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                                 }
                             </Space>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Cập nhật lần cuối">
+                        <Descriptions.Item label={t('machine.label.updated_at')}>
                             <Space>
                                 <CalendarOutlined />
                                 {machine.updatedAt 
@@ -180,7 +181,7 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                     title={
                         <span>
                             <DashboardOutlined style={{ marginRight: '8px' }} />
-                            Trạng thái
+                            {t('machine.status')}
                         </span>
                     }
                     style={{ height: 'fit-content' }}

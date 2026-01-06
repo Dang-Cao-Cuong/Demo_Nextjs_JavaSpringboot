@@ -4,7 +4,7 @@ import { Machine } from '@/types';
 import MachineCard from './MachineCard';
 import MachineFilter from "./machineFilter"
 import { Row, Col, Pagination, Empty } from 'antd';
-
+import { useTranslation } from 'react-i18next';
 interface MachineListProps {
   machines: Machine[];
   totalPages: number;
@@ -30,6 +30,7 @@ export default function MachineList({
   onFilterChange,
   onView,
 }: MachineListProps) {
+     const { t } = useTranslation();
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Bộ lọc */}
@@ -37,7 +38,7 @@ export default function MachineList({
 
       {/* Danh sách machines */}
       {machines.length === 0 ? (
-        <Empty description="Không có máy móc nào" />
+        <Empty description={t('machine.empty_list')} />
       ) : (
         <>
           <Row gutter={[16, 16]}>
@@ -62,7 +63,7 @@ export default function MachineList({
                 pageSize={pageSize}
                 onChange={(page, pageSize) => onPageChange(page - 1, pageSize)}
                 showSizeChanger
-                showTotal={(total) => `Tổng ${total} máy`}
+                showTotal={(total) => {t('machine.total_count')}}
               />
             </div>
           )}

@@ -1,17 +1,11 @@
 import { apiClient } from '../axios';
-import { ApiResponse } from '@/types';
+import { ApiResponse, LoginRequest,LoginResponse } from '@/types';
+import { tokenService } from './tokenService';
+import { refreshTokenService } from './refreshTokenService';
 
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
 
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  tokenType: string;
-  expiresIn: number;
-}
+
+
 
 export const authApi = {
   // Đăng nhập
@@ -30,18 +24,28 @@ export const authApi = {
       console.error('Invalid response structure:', response.data);
       throw new Error('Invalid response: missing tokens');
     }
+
+    // Lưu tokens sử dụng tokenService
+    tokenService.setTokens(data.accessToken, data.refreshToken);
     
     return data;
   },
 
   // Đăng xuất
   logout: async (): Promise<void> => {
-    await apiClient.post('/auth/logout');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout API error:', error);
+    } finally {
+      // Luôn xóa tokens và reset state
+      tokenService.clearTokens();
+      refreshTokenService.reset();
+    }
   },
 
-  // Refresh token
+  // Refresh token - Không nên gọi trực tiếp, dùng refreshTokenService
+  // Giữ lại để backward compatibility
   refresh: async (refreshToken: string): Promise<LoginResponse> => {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', { refreshToken });
     console.log('Refresh response:', response.data);
@@ -52,9 +56,9 @@ export const authApi = {
     
     const data = response.data.result;
     
-    if (!data.accessToken) {
+    if (!data.accessToken || !data.refreshToken) {
       console.error('Invalid refresh response:', response.data);
-      throw new Error('Invalid refresh response: missing accessToken');
+      throw new Error('Invalid refresh response: missing tokens');
     }
     
     return data;

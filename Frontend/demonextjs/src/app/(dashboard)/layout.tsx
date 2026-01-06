@@ -7,10 +7,8 @@ import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/auth-context';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
 import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
-
-// BIẾN TẠM THỜI CHO DEVELOPMENT: Đặt true để bỏ qua authentication
-const SKIP_AUTH_IN_DEV = false; // Đổi thành true để tắt authentication trong development
-
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 export default function DashboardLayout({
   children,
 }: {
@@ -19,11 +17,8 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, loading, logout, user } = useAuth();
-
+  const { t } = useTranslation();
   useEffect(() => {
-    // Bỏ qua authentication nếu SKIP_AUTH_IN_DEV = true
-    if (SKIP_AUTH_IN_DEV) return;
-    
     // Đợi loading xong mới kiểm tra authentication
     if (!loading && !isAuthenticated) {
       // Lưu trang hiện tại để redirect lại sau khi đăng nhập
@@ -32,13 +27,13 @@ export default function DashboardLayout({
     }
   }, [isAuthenticated, loading, router, pathname]);
 
-  // Hiển thị loading khi đang kiểm tra authentication (trừ khi skip auth)
-  if (!SKIP_AUTH_IN_DEV && loading) {
+  // Hiển thị loading khi đang kiểm tra authentication
+  if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         backgroundColor: '#ffffff'
       }}>
@@ -47,8 +42,8 @@ export default function DashboardLayout({
     );
   }
 
-  // Không hiển thị nội dung nếu chưa đăng nhập (trừ khi skip auth)
-  if (!SKIP_AUTH_IN_DEV && !isAuthenticated) {
+  // Không hiển thị nội dung nếu chưa đăng nhập
+  if (!isAuthenticated) {
     return null;
   }
 
@@ -57,58 +52,60 @@ export default function DashboardLayout({
   };
 
   return (
-        <WebSocketProvider>
-    <div style={{ 
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      {/* Listener cho lỗi máy */}
-      <MachineErrorListener />
-      
-      {/* Header with Logout Button */}
+    <WebSocketProvider>
       <div style={{
-        backgroundColor: '#ffffff',
-        borderBottom: '1px solid #e8e8e8',
-        padding: '12px 24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: '#1890ff' }}>
-            Hệ thống Quản lý Máy CNC
-          </h2>
-        </div>
-        
-        <Space size="middle">
-          {user && (
-            <span style={{ color: '#666', fontSize: '14px' }}>
-              <UserOutlined style={{ marginRight: '6px' }} />
-              {user.fullname || user.username}
-            </span>
-          )}
-          {!SKIP_AUTH_IN_DEV && (
-            <Button 
-              type="primary" 
-              danger 
+        minHeight: '100vh',
+        backgroundColor: '#f5f5f5'
+      }}
+      >
+
+        {/* Listener cho lỗi máy */}
+        <MachineErrorListener />
+
+        {/* Header with Logout Button */}
+        <div style={{
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e8e8e8',
+          padding: '12px 24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: '#1890ff' }}>
+              {t('app.description')}
+            </h2>
+          </div>
+
+          <Space size="middle">
+            <LanguageSwitcher />
+            {user && (
+              <span style={{ color: '#666', fontSize: '14px' }}>
+                <UserOutlined style={{ marginRight: '6px' }} />
+                {user.fullname || user.username}
+              </span>
+            )}
+
+            <Button
+              type="primary"
+              danger
               icon={<LogoutOutlined />}
               onClick={handleLogout}
             >
-              Đăng xuất
+              {t('auth.logout')}
             </Button>
-          )}
-        </Space>
-      </div>
+          </Space>
+        </div>
 
-      {/* Main Content */}
-      <div>
-        {children}
+        {/* Main Content */}
+        <div>
+          {children}
+        </div>
       </div>
-    </div>
     </WebSocketProvider>
   );
 }

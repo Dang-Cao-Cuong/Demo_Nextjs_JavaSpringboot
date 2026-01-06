@@ -2,7 +2,7 @@
 
 import { Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-
+import { useTranslation } from 'react-i18next';
 interface MachineDeleteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -18,25 +18,26 @@ export default function MachineDeleteDialog({
   machineName,
   loading,
 }: MachineDeleteDialogProps) {
+   const { t } = useTranslation();
   return (
     <Modal
       title={
         <span>
           <ExclamationCircleOutlined style={{ color: '#ff4d4f', marginRight: 8 }} />
-          Xác nhận xóa
+          {t('machine.delete_confirm.title')}
         </span>
       }
       open={open}
       onOk={onConfirm}
       onCancel={() => onOpenChange(false)}
-      okText="Xóa"
-      cancelText="Hủy"
+      okText={t('machine.delete')}
+      cancelText={t('machine.cancel')}
       okButtonProps={{ danger: true, loading }}
     >
       <p>
-        Bạn có chắc chắn muốn xóa máy <strong>{machineName}</strong>?
+         {t('machine.delete_confirm.message')} <strong>{machineName}</strong>?
       </p>
-      <p style={{ color: '#666' }}>Hành động này không thể hoàn tác.</p>
+      <p style={{ color: '#666' }}> {t('machine.delete_confirm.warning')} .</p>
     </Modal>
   );
 }

@@ -3,20 +3,21 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Form, Input, Button, Card, Alert, Typography, Divider, App } from 'antd';
-import { UserOutlined, LockOutlined, LoginOutlined, LoadingOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
-import { LoginRequest } from '@/services/auth/authApi';
+import { LoginRequest } from '@/types';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
-const { Title, Text } = Typography;
-
-
+const { Text } = Typography;
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get('returnUrl');
   const { message } = App.useApp();
+  const { t } = useTranslation();
   
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,7 +30,7 @@ export function LoginForm() {
 
     try {
       await login(values);
-      message.success('Đăng nhập thành công!');
+      message.success(t('auth.loginSuccess'));
       
       // Redirect về trang trước đó hoặc trang home
       if (returnUrl) {
@@ -38,7 +39,7 @@ export function LoginForm() {
         router.push('/home');
       }
     } catch (err: any) {
-      const errorMsg = err?.response?.data?.message || err.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+      const errorMsg = err?.response?.data?.message || err.message || t('auth.loginError');
       setError(errorMsg);
       message.error(errorMsg);
       console.error('Login error:', err);
@@ -52,10 +53,11 @@ export function LoginForm() {
       className="w-full max-w-md"
       title={
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Đăng Nhập</h1>
-          <p className="text-sm text-gray-500 mt-1">Hệ thống quản lý máy CNC</p>
+          <h1 className="text-2xl font-bold">{t('auth.login')}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t('app.description')}</p>
         </div>
       }
+      extra={<LanguageSwitcher />}
     >
       {error && (
         <Alert
@@ -79,26 +81,26 @@ export function LoginForm() {
         }}
       >
         <Form.Item
-          label="Tên đăng nhập"
+          label={t('auth.username')}
           name="username"
           rules={[
-            { required: true, message: "Vui lòng nhập tên đăng nhập" },
+            { required: true, message: t('auth.usernameRequired') },
           ]}
         >
           <Input
             prefix={<UserOutlined />}
-            placeholder="username"
+            placeholder={t('auth.username')}
             disabled={isLoading}
             size="large"
           />
         </Form.Item>
 
         <Form.Item
-          label="Mật khẩu"
+          label={t('auth.password')}
           name="password"
           rules={[
-            { required: true, message: 'Vui lòng nhập mật khẩu' },
-            { min: 4, message: "Mật khẩu có ít nhất 4 ký tự" },
+            { required: true, message: t('auth.passwordRequired') },
+            { min: 4, message: t('auth.passwordMinLength') },
           ]}
         >
           <Input.Password
@@ -118,17 +120,17 @@ export function LoginForm() {
             loading={isLoading}
             icon={!isLoading && <LoginOutlined />}
           >
-            {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            {isLoading ? t('auth.loggingIn') : t('auth.loginButton')}
           </Button>
         </Form.Item>
       </Form>
 
-      <Divider plain>hoặc</Divider>
+      <Divider plain>{t('common.or')}</Divider>
 
       <div style={{ textAlign: 'center' }}>
-        <Text type="secondary">Chưa có tài khoản? </Text>
+        <Text type="secondary">{t('auth.noAccount')} </Text>
         <Link href="/register" style={{ color: '#1890ff', fontWeight: 500 }}>
-          Đăng ký ngay
+          {t('auth.registerNow')}
         </Link>
       </div>
     </Card>

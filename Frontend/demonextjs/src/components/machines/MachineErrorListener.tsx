@@ -6,57 +6,50 @@ import { notification } from 'antd';
 import { WarningOutlined } from '@ant-design/icons';
 import { MachineErrorNotification } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
-export function MachineErrorListener() {
+
+export const MachineErrorListener = () => {
+
   const queryClient = useQueryClient();
-  const lastNotificationRef = useRef<{[key: string]: number}>({});
+  const lastNotificationRef = useRef<{ [key: string]: number }>({});
+  const { t } = useTranslation(); // ✅ Thêm hook translation
 
-  // Memoize handleError để tránh re-subscribe
-  const handleError = useCallback((error: MachineErrorNotification) => {
-    console.log(' Nhận cảnh báo lỗi máy:', error);
+  const handleError = useCallback(
+    (error: MachineErrorNotification) => {
+      console.log('🔔 Nhận cảnh báo lỗi máy:', error);
 
-    // Debounce: Tránh duplicate trong 3 giây cho cùng 1 máy
-    const now = Date.now();
-    const lastTime = lastNotificationRef.current[error.machineId] || 0;
-    if (now - lastTime < 3000) {
-      console.log('⏭ Bỏ qua notification duplicate cho máy:', error.machineId);
-      return;
-    }
-    lastNotificationRef.current[error.machineId] = now;
+      const now = Date.now();
+      const lastTime = lastNotificationRef.current[error.machineId] || 0;
 
-    // Thêm key duy nhất để tránh duplicate notification
-    const notificationKey = `machine-error-${error.machineId}`;
+      // Debounce: Bỏ qua nếu cùng máy trong vòng 3 giây
+      if (now - lastTime < 3000) {
+        console.log('⏭️ Bỏ qua duplicate notification');
+        return;
+      }
 
-    // Xử lý message (backend gửi 'message', không phải 'errorMessage')
-    const displayMessage = error.message || error.errorMessage || 'Lỗi không xác định';
-    const errorCode = error.errorCode || 'N/A';
+      lastNotificationRef.current[error.machineId] = now;
 
-    // Hiển thị notification
-    notification.error({
-      key: notificationKey,
-      message: ` Lỗi máy: ${error.machineName}`,
-      description: (
-        <div>
-          <div>{displayMessage}</div>
-          {error.errorCode && <div style={{ fontSize: '12px', marginTop: '4px', color: '#999' }}>Mã lỗi: {errorCode}</div>}
-        </div>
-      ),
-      icon: <WarningOutlined style={{ color: '#ff4d4f' }} />,
-      placement: 'topRight',
-      duration: 0, // Không tự đóng
-    });
+      const message = error.message || error.errorMessage || t('notification.machineError', { machineName: error.machineName });
+      const errorCode = error.errorCode || 'undefined';
 
-    // Tự động refetch dữ liệu máy để cập nhật trạng thái
-    queryClient.invalidateQueries({ queryKey: ['machines'] });
-    
-    // Nếu có query cho máy cụ thể, cũng invalidate nó
-    if (error.machineId) {
+      // ✅ Sử dụng translation
+      notification.error({
+        message: t('notification.machineError', { machineName: error.machineName }),
+        description: t('notification.machineErrorDesc', { message, errorCode }),
+        placement: 'topRight',
+        duration: 0,
+        key: error.machineId,
+      });
+
+      // Tự động refetch dữ liệu máy
+      queryClient.invalidateQueries({ queryKey: ['machines'] });
       queryClient.invalidateQueries({ queryKey: ['machine', error.machineId] });
-    }
-    
-    console.log(' Đã cập nhật dữ liệu máy');
-  }, [queryClient]);
 
+      console.log('✅ Đã cập nhật dữ liệu máy');
+    },
+    [queryClient, t] // ✅ Thêm t vào dependencies
+  );
   useWebSocket({
     topic: '/topic/errors',
     onMessage: handleError,
