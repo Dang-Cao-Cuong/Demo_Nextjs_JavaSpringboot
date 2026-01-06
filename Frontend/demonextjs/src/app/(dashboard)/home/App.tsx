@@ -1,4 +1,4 @@
-import Machine from "./components/machine";
+import Machine from "./page";
 
 function App() {
 
