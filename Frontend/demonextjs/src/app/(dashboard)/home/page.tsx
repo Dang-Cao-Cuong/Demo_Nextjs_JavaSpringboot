@@ -3,29 +3,49 @@ import './index.css'
 
 interface CNCMachine {
   id: string;
-  status: "Ổn định" | "Lỗi";
+  status: "Hoạt động" | "Lỗi";
   model: string;
   location: string;
   year: number;
 }
 
-const username: string = "nguyenvana";
-
 const machines: CNCMachine[] = [
-  { id: "CNC-01", status: "Ổn định", model: "MD_1", location: "B1", year: 1990 },
+  { id: "CNC-01", status: "Hoạt động", model: "MD_1", location: "B1", year: 1990 },
   { id: "CNC-02", status: "Lỗi", model: "Y", location: "ABC", year: 2026 },
 ];
+
+const totalMachines = machines.length;
+
+const runningMachines = machines.filter(
+  (m) => m.status === "Hoạt động"
+).length;
+
+const errorMachines = machines.filter(
+  (m) => m.status === "Lỗi"
+).length;
+
 
 const App: React.FC = () => {
   return (
     <div className="app">
       <main className="container">
         <div className="summary">
-          <div className="card">Tổng máy<br /><b>2</b></div>
-          <div className="card">Đang hoạt động<br /><b>2</b></div>
-          <div className="card">Ổn định<br /><b>1</b></div>
-          <div className="card">Lỗi<br /><b>1</b></div>
+          <div className="card">
+            Tổng máy <br />
+            <b>{totalMachines}</b>
+          </div>
+
+          <div className="card">
+            Đang hoạt động <br />
+            <b>{runningMachines}</b>
+          </div>
+
+          <div className="card">
+            Lỗi <br />
+            <b>{errorMachines}</b>
+          </div>
         </div>
+
 
         <h1>Danh sách máy CNC</h1>
 
@@ -44,8 +64,8 @@ const App: React.FC = () => {
               <tr key={m.id}>
                 <td>{m.id}</td>
                 <td className={
-                  m.status === "Ổn định"
-                    ? "warning"
+                  m.status === "Hoạt động"
+                    ? "running"
                     : "stopped"
                 }>
                   {m.status}
@@ -64,6 +84,7 @@ const App: React.FC = () => {
               <li><a href="#">Tổng quan CNC</a></li>
               <li><a href="#">Cấu tạo CNC</a></li>
             </ul>
+            <button id="registerBtn">Thêm người dùng</button>
           </aside>
           <section className="content" id="A1">
             <h2><b>1. Tổng quan về máy CNC</b></h2>
@@ -95,7 +116,7 @@ const App: React.FC = () => {
             </p>
           </div>
 
-         
+
           <div className="footer-col">
             <h3>Chức năng</h3>
             <ul>
@@ -114,7 +135,7 @@ const App: React.FC = () => {
             </ul>
           </div>
 
-   
+
           <div className="footer-col">
             <h3>Liên hệ</h3>
             <p>🏭 Xưởng CNC: Bình Dương</p>

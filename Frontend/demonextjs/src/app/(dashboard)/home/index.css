@@ -125,6 +125,17 @@ th {
   color: #007bff;
 }
 
+#registerBtn {
+  cursor: pointer;
+  background-color: #007bff;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#registerBtn:hover {
+  background-color: #0055b0;
+}
+
 
 .footer {
   background-color: #1f2933;
