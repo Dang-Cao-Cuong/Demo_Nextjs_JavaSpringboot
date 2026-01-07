@@ -1,5 +1,5 @@
 import { apiClient } from '../axios';
-import { ApiResponse, LoginRequest,LoginResponse } from '@/types';
+import { ApiResponse, LoginRequest, LoginResponse } from '@/types';
 import { tokenService } from './tokenService';
 import { refreshTokenService } from './refreshTokenService';
 
@@ -12,22 +12,22 @@ export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', credentials);
     console.log('Login response:', response.data);
-    
-    // Xử lý response: { code: 1000, result: { accessToken, refreshToken } }
+
+    // Xử lý response: { code: 1000, result: { token, authenticated } }
     if (response.data.code !== 1000 || !response.data.result) {
-      throw new Error(response.data.message || 'Invalid response: missing tokens');
-    }
-    
-    const data = response.data.result;
-    
-    if (!data.accessToken || !data.refreshToken) {
-      console.error('Invalid response structure:', response.data);
-      throw new Error('Invalid response: missing tokens');
+      throw new Error(response.data.message || 'Invalid response: missing data');
     }
 
-    // Lưu tokens sử dụng tokenService
-    tokenService.setTokens(data.accessToken, data.refreshToken);
-    
+    const data = response.data.result;
+
+    if (!data.token) {
+      console.error('Invalid response structure:', response.data);
+      throw new Error('Invalid response: missing token');
+    }
+
+    // Lưu tokens sử dụng tokenService (chỉ lưu access token)
+    tokenService.setTokens(data.token);
+
     return data;
   },
 
@@ -49,18 +49,18 @@ export const authApi = {
   refresh: async (refreshToken: string): Promise<LoginResponse> => {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', { refreshToken });
     console.log('Refresh response:', response.data);
-    
+
     if (response.data.code !== 1000 || !response.data.result) {
       throw new Error(response.data.message || 'Invalid refresh response');
     }
-    
+
     const data = response.data.result;
-    
-    if (!data.accessToken || !data.refreshToken) {
+
+    if (!data.token) {
       console.error('Invalid refresh response:', response.data);
-      throw new Error('Invalid refresh response: missing tokens');
+      throw new Error('Invalid refresh response: missing token');
     }
-    
+
     return data;
   },
 };

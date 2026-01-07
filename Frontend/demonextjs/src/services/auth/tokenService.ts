@@ -26,12 +26,15 @@ export const tokenService = {
   /**
    * Lưu cả 2 token (Token Rotation - Backend trả về cả 2)
    */
-  setTokens(accessToken: string, refreshToken: string): void {
+  setTokens(accessToken: string, refreshToken?: string | null): void {
     if (typeof window === 'undefined') return;
-    
+
     localStorage.setItem(TOKEN_KEY, accessToken);
-    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-    
+    if (refreshToken) {
+      localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    }
+
+
     console.log(' [TokenService] Đã lưu tokens mới');
   },
 
@@ -40,10 +43,10 @@ export const tokenService = {
    */
   clearTokens(): void {
     if (typeof window === 'undefined') return;
-    
+
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
-    
+
     console.log(' [TokenService] Đã xóa tất cả tokens');
   },
 
@@ -51,6 +54,6 @@ export const tokenService = {
    * Kiểm tra xem có token hay không
    */
   hasTokens(): boolean {
-    return !!(this.getAccessToken() && this.getRefreshToken());
+    return !!this.getAccessToken();
   }
 };
