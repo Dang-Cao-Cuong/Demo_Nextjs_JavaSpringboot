@@ -71,6 +71,11 @@ th {
   font-weight: bold;
 }
 
+.norun {
+  color: gray;
+  font-weight: bold;
+}
+
 .layout {
   display: flex;
   max-width: 1200px;

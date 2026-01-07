@@ -1,9 +1,12 @@
 import React from "react";
 import './index.css'
+import { Card, Spin, Table } from 'antd';
+import { useMachines } from '@/hooks/useMachine'; // Import hook
+
 
 interface CNCMachine {
   id: string;
-  status: "Hoạt động" | "Lỗi";
+  status: "Hoạt động" | "Lỗi" | "Không hoạt động";
   model: string;
   location: string;
   year: number;
@@ -12,6 +15,7 @@ interface CNCMachine {
 const machines: CNCMachine[] = [
   { id: "CNC-01", status: "Hoạt động", model: "MD_1", location: "B1", year: 1990 },
   { id: "CNC-02", status: "Lỗi", model: "Y", location: "ABC", year: 2026 },
+  { id: "CNC-02", status: "Không hoạt động", model: "Y", location: "ABC", year: 2026 },
 ];
 
 const totalMachines = machines.length;
@@ -24,6 +28,11 @@ const errorMachines = machines.filter(
   (m) => m.status === "Lỗi"
 ).length;
 
+const statusClass: Record<string, string> = {
+  "Hoạt động": "running",
+  "Lỗi": "stopped",
+  "Không hoạt động": "norun",
+};
 
 const App: React.FC = () => {
   return (
@@ -45,8 +54,6 @@ const App: React.FC = () => {
             <b>{errorMachines}</b>
           </div>
         </div>
-
-
         <h1>Danh sách máy CNC</h1>
 
         <table>
@@ -63,11 +70,7 @@ const App: React.FC = () => {
             {machines.map((m) => (
               <tr key={m.id}>
                 <td>{m.id}</td>
-                <td className={
-                  m.status === "Hoạt động"
-                    ? "running"
-                    : "stopped"
-                }>
+                <td className={`status ${statusClass[m.status]}`}>
                   {m.status}
                 </td>
                 <td>{m.model}</td>
