@@ -1,14 +1,15 @@
-import api from '../api';
+import { apiClient } from '../axios';
+import { tokenService } from './tokenService';
+import { refreshTokenService } from './refreshTokenService';
 
 export const logout = async (): Promise<void> => {
     try {
-        await api.post('/auth/logout');
+        await apiClient.post('/auth/logout');
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('Logout API error:', error);
     } finally {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-        }
+        // Luôn xóa tokens và reset state
+        tokenService.clearTokens();
+        refreshTokenService.reset();
     }
 };

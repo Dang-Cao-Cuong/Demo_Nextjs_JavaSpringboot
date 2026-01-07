@@ -18,7 +18,7 @@ export function LoginForm() {
   const returnUrl = searchParams.get('returnUrl');
   const { message } = App.useApp();
   const { t } = useTranslation();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [form] = Form.useForm<LoginRequest>();
@@ -31,7 +31,7 @@ export function LoginForm() {
     try {
       await login(values);
       message.success(t('auth.loginSuccess'));
-      
+
       // Redirect về trang trước đó hoặc trang home
       if (returnUrl) {
         router.push(decodeURIComponent(returnUrl));
@@ -125,14 +125,7 @@ export function LoginForm() {
         </Form.Item>
       </Form>
 
-      <Divider plain>{t('common.or')}</Divider>
 
-      <div style={{ textAlign: 'center' }}>
-        <Text type="secondary">{t('auth.noAccount')} </Text>
-        <Link href="/register" style={{ color: '#1890ff', fontWeight: 500 }}>
-          {t('auth.registerNow')}
-        </Link>
-      </div>
     </Card>
   );
 }

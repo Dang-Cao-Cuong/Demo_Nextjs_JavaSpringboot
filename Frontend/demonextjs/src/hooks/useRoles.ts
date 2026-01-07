@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rolesApi } from '@/services/roles/rolesApi';
-import { RoleCreateRequest } from '@/types/role/Role';
+import { RoleCreateRequest } from '@/types';
 import { message } from 'antd';
 
 export function useRoles() {
