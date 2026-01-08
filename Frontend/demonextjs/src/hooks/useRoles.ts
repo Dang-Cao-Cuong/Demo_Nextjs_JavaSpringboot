@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { rolesApi } from '@/services/roles/rolesApi';
+import { rolesApi } from '@/services';
 import { RoleCreateRequest } from '@/types';
 import { message } from 'antd';
 

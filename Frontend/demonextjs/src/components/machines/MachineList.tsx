@@ -1,6 +1,7 @@
 'use client';
 
-import { Machine } from '@/types';
+import { memo } from 'react';
+import { Machine, MachineFilterParams } from '@/types';
 import MachineCard from './MachineCard';
 import MachineFilter from "./machineFilter"
 import { Row, Col, Pagination, Empty } from 'antd';
@@ -14,11 +15,11 @@ interface MachineListProps {
   onPageChange: (page: number, pageSize: number) => void;
   onEdit: (machine: Machine) => void;
   onDelete: (id: string) => void;
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: MachineFilterParams) => void;
   onView?: (id: string) => void;
 }
 
-export default function MachineList({
+export function MachineList({
   machines,
   totalPages,
   currentPage,
@@ -30,7 +31,7 @@ export default function MachineList({
   onFilterChange,
   onView,
 }: MachineListProps) {
-     const { t } = useTranslation();
+  const { t } = useTranslation();
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Bộ lọc */}
@@ -63,7 +64,7 @@ export default function MachineList({
                 pageSize={pageSize}
                 onChange={(page, pageSize) => onPageChange(page - 1, pageSize)}
                 showSizeChanger
-                showTotal={(total) => {t('machine.total_count')}}
+                showTotal={(total) => t('machine.total_count')}
               />
             </div>
           )}
@@ -72,3 +73,5 @@ export default function MachineList({
     </div>
   );
 }
+
+export default memo(MachineList);

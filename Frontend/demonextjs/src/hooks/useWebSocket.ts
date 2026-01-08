@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { websocketService } from '@/services/websocket/websocketService';
+import { websocketService } from '@/services';
 import { StompSubscription } from '@stomp/stompjs';
 
 interface UseWebSocketOptions {

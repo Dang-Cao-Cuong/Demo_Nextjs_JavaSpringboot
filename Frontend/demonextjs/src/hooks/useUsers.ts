@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersApi } from '@/services/users/usersApi';
+import { userApi } from '@/services';
 import { UserCreateRequest, UserUpdateRequest } from '@/types';
 import { message } from 'antd';
 
@@ -14,14 +14,14 @@ export function useUsers() {
     isLoading,
     isError,
     error,
-  } = useQuery({ 
+  } = useQuery({
     queryKey: ['users'],
-    queryFn: usersApi.getAllUsers,
+    queryFn: userApi.getAllUsers,
   });
 
   // Create user
   const createMutation = useMutation({
-    mutationFn: (data: UserCreateRequest) => usersApi.createUser(data),
+    mutationFn: (data: UserCreateRequest) => userApi.createUser(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       message.success('Tạo user thành công');
@@ -34,7 +34,7 @@ export function useUsers() {
   // Update user
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UserUpdateRequest }) =>
-      usersApi.updateUser(id, data),
+      userApi.updateUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       message.success('Cập nhật user thành công');
@@ -46,7 +46,7 @@ export function useUsers() {
 
   // Delete user
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => usersApi.deleteUser(id),
+    mutationFn: (id: string) => userApi.deleteUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       message.success('Xóa user thành công');
@@ -78,7 +78,7 @@ export function useMyInfo() {
     error,
   } = useQuery({
     queryKey: ['myInfo'],
-    queryFn: usersApi.getMyInfo,
+    queryFn: userApi.getMyInfo,
   });
 
   return {

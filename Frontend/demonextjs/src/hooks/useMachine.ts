@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { machinesApi } from '@/services/machines/machineApi';
+import { machineApi } from '@/services';
 import {
   Machine,
   MachineCreateRequest,
@@ -27,43 +27,47 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     refetch,
   } = useQuery({
     queryKey: ['machines'],
-    queryFn: () => machinesApi.getAllMachines(),
+    queryFn: () => machineApi.getAllMachines(),
   });
 
   // Apply filters
-  const filteredMachines = allMachines ? allMachines.filter((machine) => {
-    // Filter by name
-    if (filters.name && !machine.name.toLowerCase().includes(filters.name.toLowerCase())) {
-      return false;
-    }
-    
-    // Filter by model
-    if (filters.model && !machine.model.toLowerCase().includes(filters.model.toLowerCase())) {
-      return false;
-    }
-    
-    // Filter by location
-    if (filters.location && !machine.location.toLowerCase().includes(filters.location.toLowerCase())) {
-      return false;
-    }
-    
-    // Filter by status
-    if (filters.status && machine.status !== filters.status) {
-      return false;
-    }
-    
-    return true;
-  }) : [];
+  const filteredMachines = useMemo(() => {
+    return allMachines ? allMachines.filter((machine) => {
+      // Filter by name
+      if (filters.name && !machine.name.toLowerCase().includes(filters.name.toLowerCase())) {
+        return false;
+      }
+
+      // Filter by model
+      if (filters.model && !machine.model.toLowerCase().includes(filters.model.toLowerCase())) {
+        return false;
+      }
+
+      // Filter by location
+      if (filters.location && !machine.location.toLowerCase().includes(filters.location.toLowerCase())) {
+        return false;
+      }
+
+      // Filter by status
+      if (filters.status && machine.status !== filters.status) {
+        return false;
+      }
+
+      return true;
+    }) : [];
+  }, [allMachines, filters]);
 
   // Client-side pagination
-  const paginatedMachines = filteredMachines.slice(
-    filters.page! * filters.size!,
-    (filters.page! + 1) * filters.size!
-  );
+  const paginatedMachines = useMemo(() => {
+    return filteredMachines.slice(
+      filters.page! * filters.size!,
+      (filters.page! + 1) * filters.size!
+    );
+  }, [filteredMachines, filters.page, filters.size]);
 
   // Create machine
   const createMutation = useMutation({
-    mutationFn: (data: MachineCreateRequest) => machinesApi.createMachine(data),
+    mutationFn: (data: MachineCreateRequest) => machineApi.createMachine(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
       message.success('Tạo máy thành công');
@@ -76,7 +80,7 @@ export function useMachines(initialFilters?: MachineFilterParams) {
   // Update machine
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: MachineUpdateRequest }) =>
-      machinesApi.updateMachine(id, data),
+      machineApi.updateMachine(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
       message.success('Cập nhật máy thành công');
@@ -88,7 +92,7 @@ export function useMachines(initialFilters?: MachineFilterParams) {
 
   // Delete machine
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => machinesApi.deleteMachine(id),
+    mutationFn: (id: string) => machineApi.deleteMachine(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
       message.success('Xóa máy thành công');
@@ -126,7 +130,7 @@ export function useMachine(id: string) {
     error,
   } = useQuery({
     queryKey: ['machine', id],
-    queryFn: () => machinesApi.getMachineById(id),
+    queryFn: () => machineApi.getMachineById(id),
     enabled: !!id,
   });
 
