@@ -106,6 +106,9 @@ const App: React.FC = () => {
             <img src="https://maycncnhapkhau.com/wp-content/uploads/2021/04/cau-tao-may-cnc-4.jpg" alt="" />
           </section>
         </div>
+        <div className="differentProducts">
+            
+        </div>
       </main>
 
       <footer className="footer">
