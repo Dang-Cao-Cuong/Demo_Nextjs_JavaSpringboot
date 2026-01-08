@@ -2,7 +2,7 @@
 
 import { useEffect, ReactNode } from 'react';
 import { useAuthStore } from '@/store/authStore';
-import { authApi } from '@/services/auth/authApi';
+import { authApi } from '@/services';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -15,7 +15,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const initializeAuth = async () => {
       // Kiểm tra xem có token trong storage không
       const storedToken = localStorage.getItem('accessToken');
-      
+
       if (!storedToken) {
         setLoading(false);
         return;
@@ -23,8 +23,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       try {
         // Verify token bằng cách gọi API lấy thông tin user
-        const user = await authApi.getCurrentUser();
-        setUser(user);
+        const response = await authApi.getCurrentUser();
+        if (response.result) {
+          setUser(response.result);
+        } else {
+          throw new Error('User not found');
+        }
       } catch (error) {
         // Token không hợp lệ, logout
         console.error('Failed to verify token:', error);

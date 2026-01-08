@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { Input, Button, Select, Card } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { MachineFilterParams } from '@/types';
 interface MachineFilterProps {
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: MachineFilterParams) => void;
 }
 
-export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
+export function MachineFilter({ onFilterChange }: MachineFilterProps) {
   const [filters, setFilters] = useState({
     name: '',
     model: '',
@@ -22,18 +23,19 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  const handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = useCallback((key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
-  };
+  }, []);
 
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     setFilters({
       name: '',
       model: '',
       location: '',
       status: '',
     });
-  };
+  }, []);
+
   const statusOptions = [
     { label: t('machine.filter.all_statuses'), value: '' },
     { label: t('machine.label.status.ACTIVE'), value: 'ACTIVE' },
@@ -88,3 +90,5 @@ export default function MachineFilter({ onFilterChange }: MachineFilterProps) {
     </Card>
   );
 }
+
+export default memo(MachineFilter);

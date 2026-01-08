@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useMachines } from '@/hooks/useMachine';
 import MachineList from '@/components/machines/MachineList';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
-import { Machine } from '@/types';
+import { Machine, MachineFilterParams } from '@/types';
 import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
 import { useTranslation } from 'react-i18next';
 export default function MachinesPage() {
@@ -34,33 +34,33 @@ export default function MachinesPage() {
     setFilters((prev) => ({ ...prev, page, size: pageSize }));
   }, []);
 
-  const handleFilterChange = useCallback((newFilters: any) => {
+  const handleFilterChange = useCallback((newFilters: MachineFilterParams) => {
     setFilters((prev) => ({ ...prev, ...newFilters, page: 0 }));
   }, []);
 
-  const handleEdit = (machine: Machine) => {
+  const handleEdit = useCallback((machine: Machine) => {
     router.push(`/machines/${machine.id}/edit`);
-  };
+  }, [router]);
 
-  const handleView = (id: string) => {
+  const handleView = useCallback((id: string) => {
     router.push(`/machines/${id}`);
-  };
+  }, [router]);
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = useCallback((id: string) => {
     const machine = machines.find((m) => m.id === id);
     if (machine) {
       setSelectedMachine(machine);
       setDeleteDialogOpen(true);
     }
-  };
+  }, [machines]);
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = useCallback(() => {
     if (selectedMachine) {
       deleteMachine(selectedMachine.id);
       setDeleteDialogOpen(false);
       setSelectedMachine(null);
     }
-  };
+  }, [selectedMachine, deleteMachine]);
 
   if (isLoading) {
     return (

@@ -10,8 +10,8 @@
  */
 
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import { tokenService } from './auth/tokenService';
-import { refreshTokenService } from './auth/refreshTokenService';
+import { tokenService } from './index';
+import { refreshTokenService } from './index';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://10.60.243.54:8080/cnc/v1';
 
@@ -59,18 +59,19 @@ apiClient.interceptors.response.use(
     };
 
     // Kiểm tra lỗi 401 Unauthorized
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
-      console.log('[Axios] 🔒 401 Unauthorized - Cần refresh token');
+    // Bỏ qua nếu là request login (vì login sai thì 401 là đúng, không cần refresh)
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !originalRequest.url?.includes('/auth/login')) {
+      console.log('[Axios]  401 Unauthorized - Cần refresh token');
 
       // Đánh dấu request này đã retry (tránh loop vô tận)
       originalRequest._retry = true;
 
       // TRÁNH REFRESH CHO CHÍNH API REFRESH (để tránh loop)
       if (originalRequest.url?.includes('/auth/refresh')) {
-        console.log('[Axios] ⚠️ Refresh API bị lỗi, logout...');
+        console.log('[Axios]  Refresh API bị lỗi, logout...');
         tokenService.clearTokens();
         refreshTokenService.reset();
-        
+
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }
@@ -83,7 +84,7 @@ apiClient.interceptors.response.use(
         // Các request khác sẽ đợi trong queue
         const newAccessToken = await refreshTokenService.refreshToken();
 
-        console.log('[Axios] ✅ Đã có token mới, retry request...');
+        console.log('[Axios]  Đã có token mới, retry request...');
 
         // Cập nhật token mới vào header
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -91,7 +92,7 @@ apiClient.interceptors.response.use(
         // Retry request gốc với token mới
         return apiClient(originalRequest);
       } catch (refreshError) {
-        console.error('[Axios] ❌ Refresh token thất bại, logout...');
+        console.error('[Axios]  Refresh token thất bại, logout...');
 
         // Logout và chuyển về login
         tokenService.clearTokens();
