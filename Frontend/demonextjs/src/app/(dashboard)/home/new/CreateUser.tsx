@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import "./CreateUser.css";
 
@@ -87,14 +89,6 @@ const CreateUser: React.FC = () => {
             <select name="role" value={form.role} onChange={handleChange}>
               <option value="USER">User</option>
               <option value="ADMIN">Admin</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Trạng thái</label>
-            <select name="status" value={form.status} onChange={handleChange}>
-              <option value="ACTIVE">Hoạt động</option>
-              <option value="INACTIVE">Không hoạt động</option>
             </select>
           </div>
         </div>

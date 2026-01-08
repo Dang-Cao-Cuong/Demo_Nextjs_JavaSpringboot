@@ -115,6 +115,7 @@ body {
   background-color: #007bff;
   padding: 10px;
   border-radius: 10px;
+  color: white;
 }
 
 #registerBtn:hover {

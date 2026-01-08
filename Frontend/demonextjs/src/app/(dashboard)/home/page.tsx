@@ -2,37 +2,9 @@ import React from "react";
 import './index.css'
 import { Card, Spin, Table } from 'antd';
 import { useMachines } from '@/hooks/useMachine'; // Import hook
+import { useNavigate } from "react-router-dom";
 
 
-interface CNCMachine {
-  id: string;
-  status: "Hoạt động" | "Lỗi" | "Không hoạt động";
-  model: string;
-  location: string;
-  year: number;
-}
-
-const machines: CNCMachine[] = [
-  { id: "CNC-01", status: "Hoạt động", model: "MD_1", location: "B1", year: 1990 },
-  { id: "CNC-02", status: "Lỗi", model: "Y", location: "ABC", year: 2026 },
-  { id: "CNC-02", status: "Không hoạt động", model: "Y", location: "ABC", year: 2026 },
-];
-
-const totalMachines = machines.length;
-
-const runningMachines = machines.filter(
-  (m) => m.status === "Hoạt động"
-).length;
-
-const errorMachines = machines.filter(
-  (m) => m.status === "Lỗi"
-).length;
-
-const statusClass: Record<string, string> = {
-  "Hoạt động": "running",
-  "Lỗi": "stopped",
-  "Không hoạt động": "norun",
-};
 
 const App: React.FC = () => {
   return (
@@ -41,17 +13,17 @@ const App: React.FC = () => {
         <div className="summary">
           <div className="card">
             Tổng máy <br />
-            <b>{totalMachines}</b>
+            <b>4</b>
           </div>
 
           <div className="card">
             Đang hoạt động <br />
-            <b>{runningMachines}</b>
+            <b>2</b>
           </div>
 
           <div className="card">
             Lỗi <br />
-            <b>{errorMachines}</b>
+            <b>1</b>
           </div>
         </div>
         <div className="layout">
@@ -61,7 +33,7 @@ const App: React.FC = () => {
               <li><a href="#">Tổng quan CNC</a></li>
               <li><a href="#">Cấu tạo CNC</a></li>
             </ul>
-            <button id="registerBtn">Thêm người dùng</button>
+            <a href="/home/new"><button id="registerBtn">Thêm người dùng</button></a>
           </aside>
           <section className="content" id="A1">
             <h2><b>1. Tổng quan về máy CNC</b></h2>
@@ -82,20 +54,20 @@ const App: React.FC = () => {
         </div>
         <div className="differentProducts">
           <h1>Các sản phẩm của CNC</h1>
-            <div className="listProducts">
-              <article className="nameMachine">
-                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-              </article>
-              <article className="nameMachine">
-                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-              </article>
-              <article className="nameMachine">
-                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-              </article>
-              <article className="nameMachine">
-                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-              </article>
-            </div>
+          <div className="listProducts">
+            <article className="nameMachine">
+              <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+            </article>
+            <article className="nameMachine">
+              <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+            </article>
+            <article className="nameMachine">
+              <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+            </article>
+            <article className="nameMachine">
+              <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+            </article>
+          </div>
         </div>
       </main>
 
