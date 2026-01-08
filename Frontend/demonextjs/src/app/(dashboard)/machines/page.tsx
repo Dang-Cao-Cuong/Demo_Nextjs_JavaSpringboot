@@ -12,7 +12,7 @@ import { MachineErrorListener } from '@/components/machines/MachineErrorListener
 import { useTranslation } from 'react-i18next';
 export default function MachinesPage() {
   const router = useRouter();
-     const { t } = useTranslation();
+  const { t } = useTranslation();
   const {
     machines,
     totalPages,
@@ -24,6 +24,8 @@ export default function MachinesPage() {
     deleteMachine,
     isDeleting,
   } = useMachines();
+
+  console.log('Machines list:', machines);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
@@ -67,7 +69,7 @@ export default function MachinesPage() {
       </div>
     );
   }
- 
+
   return (
     <>
       <MachineErrorListener />
@@ -79,7 +81,7 @@ export default function MachinesPage() {
               <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{t('machine.title')}</h1>
               <p style={{ margin: '8px 0 0 0', color: '#666' }}>
                 {t('machine.description')}
-                
+
               </p>
             </div>
             <Button
