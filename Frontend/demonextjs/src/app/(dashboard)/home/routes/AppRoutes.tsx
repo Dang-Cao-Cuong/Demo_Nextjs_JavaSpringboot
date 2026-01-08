@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Home from "../components/machine";
+import Home from "../new/machine";
 import Login from "../../../(auth)/login/page";
 import AdminRoutes from "./AdminRoutes";
 

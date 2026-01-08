@@ -38,42 +38,22 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
+.listProducts {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.listProducts .nameMachine {
+  margin: 10px;
+  box-sizing: border-box;
+  display: inline-block;
+  background: #fff;
+  border-radius: 10px;
   overflow: hidden;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-}
-
-th {
-  background: #e5e7eb;
-}
-
-.running {
-  color: green;
-  font-weight: bold;
-}
-
-.warning {
-  color: orange;
-  font-weight: bold;
-}
-
-.stopped {
-  color: red;
-  font-weight: bold;
-}
-
-.norun {
-  color: gray;
-  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 2px rgb(97, 97, 97);
+  height: 100%;
+  width: 23%;
 }
 
 .layout {

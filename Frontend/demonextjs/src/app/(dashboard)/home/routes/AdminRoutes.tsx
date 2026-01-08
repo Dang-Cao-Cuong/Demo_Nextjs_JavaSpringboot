@@ -1,5 +1,5 @@
 import { Route } from "react-router-dom";
-import AdminRoute from "../components/AdminRoute";
+import AdminRoute from "../new/AdminRoute";
 import UserList from "../pages/admin/UserList";
 import CreateUser from "../pages/admin/CreateUser";
 import RoleList from "../pages/admin/RoleList";

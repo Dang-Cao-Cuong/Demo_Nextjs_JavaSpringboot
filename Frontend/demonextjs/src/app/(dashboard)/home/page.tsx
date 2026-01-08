@@ -54,32 +54,6 @@ const App: React.FC = () => {
             <b>{errorMachines}</b>
           </div>
         </div>
-        <h1>Danh sách máy CNC</h1>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Mã máy</th>
-              <th>Trạng thái</th>
-              <th>Mẫu</th>
-              <th>Vị trí</th>
-              <th>Năm sản suất</th>
-            </tr>
-          </thead>
-          <tbody>
-            {machines.map((m) => (
-              <tr key={m.id}>
-                <td>{m.id}</td>
-                <td className={`status ${statusClass[m.status]}`}>
-                  {m.status}
-                </td>
-                <td>{m.model}</td>
-                <td>{m.location}</td>
-                <td>{m.year}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
         <div className="layout">
           <aside className="sidebar">
             <h3>Mục lục</h3>
@@ -107,7 +81,21 @@ const App: React.FC = () => {
           </section>
         </div>
         <div className="differentProducts">
-            
+          <h1>Các sản phẩm của CNC</h1>
+            <div className="listProducts">
+              <article className="nameMachine">
+                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+              </article>
+              <article className="nameMachine">
+                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+              </article>
+              <article className="nameMachine">
+                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+              </article>
+              <article className="nameMachine">
+                <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
+              </article>
+            </div>
         </div>
       </main>
 
