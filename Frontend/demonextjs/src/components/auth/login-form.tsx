@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Form, Input, Button, Card, Alert, Typography, Divider, App } from 'antd';
 import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/auth-context';
+import { useAppDispatch } from '@/redux/hooks';
+import { login } from '@/redux/slices/authSlice';
 import { LoginRequest } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
@@ -15,21 +16,23 @@ const { Text } = Typography;
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnUrl = searchParams.get('returnUrl');
+  const returnUrl = searchParams?.get('returnUrl');
   const { message } = App.useApp();
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [form] = Form.useForm<LoginRequest>();
-  const { login } = useAuth();
+
+  const dispatch = useAppDispatch();
+  // const { login } = useAuth(); // Removed Context usage
 
   const handleSubmit = async (values: LoginRequest) => {
     setIsLoading(true);
     setError('');
 
     try {
-      await login(values);
+      await dispatch(login(values)).unwrap();
       message.success(t('auth.loginSuccess'));
 
       // Redirect về trang trước đó hoặc trang home

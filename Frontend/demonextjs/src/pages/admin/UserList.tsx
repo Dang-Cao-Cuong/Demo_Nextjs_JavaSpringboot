@@ -1,13 +1,18 @@
 // src/pages/admin/UserList.tsx
 import { useEffect, useState } from "react";
-import { getUsers, deleteUser } from "../api/userApi";
+import { userApi } from "@/services";
+import { message } from "antd";
 
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
 
   const loadData = async () => {
-    const res = await getUsers();
-    setUsers(res.data);
+    try {
+      const data = await userApi.getAllUsers();
+      setUsers(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -16,8 +21,13 @@ const UserList = () => {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Xoá user?")) return;
-    await deleteUser(id);
-    loadData();
+    try {
+      await userApi.deleteUser(id);
+      message.success("Xóa thành công");
+      loadData();
+    } catch (e) {
+      message.error("Lỗi xóa user");
+    }
   };
 
   return (
