@@ -112,6 +112,18 @@
       "low": "Thấp"
     }
   },
+  "error": {
+    "default": "Đã có lỗi xảy ra",
+    "http_400": "Yêu cầu không hợp lệ",
+    "http_401": "Phiên đăng nhập hết hạn",
+    "http_403": "Bạn không có quyền thực hiện hành động này",
+    "http_404": "Không tìm thấy dữ liệu",
+    "http_409": "Dữ liệu đã tồn tại",
+    "http_500": "Lỗi hệ thống",
+    "machine_create_failed": "Tạo máy thất bại",
+    "machine_update_failed": "Cập nhật máy thất bại",
+    "machine_delete_failed": "Xóa máy thất bại"
+  },
   
   "common": {
     "back": "Quay lại",

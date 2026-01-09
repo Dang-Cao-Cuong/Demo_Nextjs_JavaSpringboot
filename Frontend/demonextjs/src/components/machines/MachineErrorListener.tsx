@@ -13,7 +13,7 @@ export const MachineErrorListener = () => {
 
   const queryClient = useQueryClient();
   const lastNotificationRef = useRef<{ [key: string]: number }>({});
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   const handleError = useCallback(
     (error: MachineErrorNotification) => {
@@ -31,12 +31,15 @@ export const MachineErrorListener = () => {
       lastNotificationRef.current[error.machineId] = now;
 
       const message = error.message || error.errorMessage || t('notification.machineError', { machineName: error.machineName });
-      const errorCode = error.errorCode || 'undefined';
+
+      const description = error.errorCode
+        ? t('notification.machineErrorDesc', { message, errorCode: error.errorCode })
+        : `Cảnh báo từ RabbitMQ: ${message}`;
 
       //  Sử dụng translation
       notification.error({
         message: t('notification.machineError', { machineName: error.machineName }),
-        description: t('notification.machineErrorDesc', { message, errorCode }),
+        description: description,
         placement: 'topRight',
         duration: 0,
         key: error.machineId,

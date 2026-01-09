@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Dropdown, MenuProps, TableColumnsType, Button as AntButton, Table, Empty, } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
-import { MachineStatusBadge } from "./machineStatusBadge";
+import { MachineStatusBadge } from "./MachineStatusBadge";
 import { Machine, MachineTableProps } from "@/types";
 
 export function MachineTable({
@@ -50,7 +50,7 @@ export function MachineTable({
 
             ),
         },
-        
+
         {
             title: 'model',
             dataIndex: 'model',
