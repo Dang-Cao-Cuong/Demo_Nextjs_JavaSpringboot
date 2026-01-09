@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { createUser } from "../api/userApi";
-import { getRoles } from "../api/roleApi";
+import { userApi, rolesApi } from "@/services";
 
 const CreateUser = () => {
   const [roles, setRoles] = useState<string[]>([]);
@@ -13,23 +12,27 @@ const CreateUser = () => {
   });
 
   useEffect(() => {
-    getRoles().then((res) =>
-      setRoles(res.data.map((r: any) => r.name))
+    rolesApi.getAllRoles().then((data) =>
+      setRoles(data.map((r: any) => r.name))
     );
   }, []);
 
   const submit = async (e: any) => {
     e.preventDefault();
-    await createUser(form);
-    alert("Tạo user thành công");
+    try {
+      await userApi.createUser(form);
+      alert("Tạo user thành công");
+    } catch (e: any) {
+      alert("Lỗi: " + e.message);
+    }
   };
 
   return (
     <form onSubmit={submit}>
-      <input placeholder="Username" onChange={e => setForm({...form, username: e.target.value})}/>
-      <input placeholder="Password" type="password" onChange={e => setForm({...form, password: e.target.value})}/>
-      <input placeholder="Full name" onChange={e => setForm({...form, fullName: e.target.value})}/>
-      <input placeholder="Email" onChange={e => setForm({...form, email: e.target.value})}/>
+      <input placeholder="Username" onChange={e => setForm({ ...form, username: e.target.value })} />
+      <input placeholder="Password" type="password" onChange={e => setForm({ ...form, password: e.target.value })} />
+      <input placeholder="Full name" onChange={e => setForm({ ...form, fullName: e.target.value })} />
+      <input placeholder="Email" onChange={e => setForm({ ...form, email: e.target.value })} />
 
       <select multiple onChange={(e) =>
         setForm({

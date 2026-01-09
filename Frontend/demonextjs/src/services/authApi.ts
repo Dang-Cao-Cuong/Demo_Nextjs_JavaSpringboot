@@ -25,10 +25,11 @@ export const authApi = {
     },
 
     // Đăng xuất
-    logout: async (): Promise<void> => {
+    logout: async (token?: string): Promise<void> => {
         try {
-            const token = tokenService.getAccessToken();
-            await apiClient.post('/auth/logout', { token });
+            const accessToken = token || tokenService.getAccessToken();
+            // Theo hình ảnh user gửi, body phải có dạng { "token": "string" }
+            await apiClient.post('/auth/logout', { token: accessToken });
         } catch (error) {
             console.error('Logout API error:', error);
         } finally {

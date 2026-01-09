@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { QueryProvider } from "@/providers/QueryProvider";
-import { AuthProvider as ZustandAuthProvider } from "@/providers/AuthProvider";
-import { AuthProvider } from "@/contexts/auth-context";
+// import { AuthProvider as ZustandAuthProvider } from "@/providers/AuthProvider";
+// import { AuthProvider } from "@/contexts/auth-context";
+import { ReduxProvider } from "@/redux/ReduxProvider";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import AntdRegistry from "./antd-registry";
 import { App } from "antd";
@@ -44,12 +45,12 @@ export default function RootLayout({
               <App>
                 <ErrorBoundary>
                   <QueryProvider>
-                    <AuthProvider>
+                    <ReduxProvider>
                       <WebSocketProvider>
                         <MachineErrorListener />
                         {children}
                       </WebSocketProvider>
-                    </AuthProvider>
+                    </ReduxProvider>
                   </QueryProvider>
                 </ErrorBoundary>
               </App>

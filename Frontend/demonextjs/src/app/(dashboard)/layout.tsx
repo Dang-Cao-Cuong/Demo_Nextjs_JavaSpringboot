@@ -9,7 +9,8 @@ import {
   HomeOutlined,
   AppstoreOutlined
 } from '@ant-design/icons';
-import { useAuth } from '@/contexts/auth-context';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { logout } from '@/redux/slices/authSlice';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
 import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
@@ -21,13 +22,15 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, loading, logout, user } = useAuth();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, isLoading: loading, user } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
+
   useEffect(() => {
     // Đợi loading xong mới kiểm tra authentication
     if (!loading && !isAuthenticated) {
       // Lưu trang hiện tại để redirect lại sau khi đăng nhập
-      const returnUrl = encodeURIComponent(pathname);
+      const returnUrl = pathname ? encodeURIComponent(pathname) : '';
       router.push(`/login?returnUrl=${returnUrl}`);
     }
   }, [isAuthenticated, loading, router, pathname]);
@@ -53,7 +56,7 @@ export default function DashboardLayout({
   }
 
   const handleLogout = async () => {
-    await logout();
+    await dispatch(logout());
   };
 
   return (
@@ -95,7 +98,7 @@ export default function DashboardLayout({
             </Button>
 
             <Button
-              type={pathname.startsWith('/machines') ? 'primary' : 'text'}
+              type={pathname?.startsWith('/machines') ? 'primary' : 'text'}
               icon={<AppstoreOutlined />}
               onClick={() => router.push('/machines')}
             >
