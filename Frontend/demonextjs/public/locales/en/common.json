@@ -19,7 +19,7 @@
     "loginError": "Login failed. Please try again.",
     "usernameRequired": "Please enter username",
     "passwordRequired": "Please enter password",
-    "passwordMinLength": "Password must be at least 4 characters",
+    "passwordMinLength": "Password must be at least 8 characters",
     "logout": "Logout",
     "logoutSuccess": "Logged out successfully",
     "noAccount": "Don't have an account?",

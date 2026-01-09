@@ -6,7 +6,7 @@ export const machineApi = {
     getAllMachines: async (): Promise<Machine[]> => {
         try {
             console.log('Calling GET /machines...');
-            const response = await apiClient.get<ApiResponse<Machine[]>>('/machines');
+            const response = await apiClient.get<ApiResponse<Machine[]>>('/machines/active');
             if (response.data.code !== 1000) {
                 throw new Error(response.data.message || 'Failed to get machines');
             }

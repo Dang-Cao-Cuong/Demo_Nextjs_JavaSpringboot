@@ -19,7 +19,7 @@
     "loginError": "Đăng nhập thất bại. Vui lòng thử lại.",
     "usernameRequired": "Vui lòng nhập tên đăng nhập",
     "passwordRequired": "Vui lòng nhập mật khẩu",
-    "passwordMinLength": "Mật khẩu có ít nhất 4 ký tự",
+    "passwordMinLength": "Mật khẩu có ít nhất 8 ký tự",
     "logout": "Đăng xuất",
     "logoutSuccess": "Đã đăng xuất",
     "noAccount": "Chưa có tài khoản?",
@@ -55,11 +55,11 @@
       "loading": "Đang tải thông tin máy...",
       "subtitle": "Nhập thông tin để tạo máy mới",
       "status": {
-      "ACTIVE": "Hoạt động",
-      "INACTIVE": "Không hoạt động",
-      "MAINTENANCE": "Bảo trì",
-      "ERROR": "Lỗi"
-    }
+        "ACTIVE": "Hoạt động",
+        "INACTIVE": "Không hoạt động",
+        "MAINTENANCE": "Bảo trì",
+        "ERROR": "Lỗi"
+      }
     },
     "delete_confirm": {
       "title": "Xác nhận xóa",
@@ -97,10 +97,8 @@
         "update": "Cập nhật",
         "reset": "Đặt lại"
       },
-     
       "update_subtitle": "Cập nhật thông tin máy {{name}}"
     }
-
   },
   "notification": {
     "machineError": "Lỗi máy: {{machineName}}",
@@ -124,7 +122,6 @@
     "machine_update_failed": "Cập nhật máy thất bại",
     "machine_delete_failed": "Xóa máy thất bại"
   },
-  
   "common": {
     "back": "Quay lại",
     "loading": "Đang tải...",
