@@ -1,39 +1,78 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import "./CreateUser.css";
+import { Color } from "antd/es/color-picker";
 
-interface UserForm {
-  fullname: string;
-  email: string;
-  phone: string;
-  password: string;
-  role: string;
-  status: string;
-}
+const CreateUser = () => {
+  const router = useRouter();
 
-const CreateUser: React.FC = () => {
-  const [form, setForm] = useState<UserForm>({
-    fullname: "",
+  const [form, setForm] = useState({
+    username: "",
+    fullName: "",
     email: "",
-    phone: "",
     password: "",
     role: "USER",
-    status: "ACTIVE",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const [errors, setErrors] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const validate = () => {
+    const err: any = {};
+    if (form.username.length < 6) err.username = "Tên đăng nhập ≥ 6 ký tự";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) err.email = "Email không hợp lệ";
+    if (form.password.length < 8) err.password = "Mật khẩu ≥ 8 ký tự";
+    return err;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("User data:", form);
 
-    // TODO: gọi API POST /users
+    const err = validate();
+    setErrors(err);
+    if (Object.keys(err).length > 0) return;
+
+    try {
+      const res = await fetch("http://localhost:8080/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: form.username,
+          password: form.password,
+          fullName: form.fullName,
+          email: form.email,
+          roles: [form.role],
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // 👇 BẮT LỖI USERNAME TRÙNG
+        if (data.message?.includes("Username")) {
+          setErrors({ username: data.message });
+          return;
+        }
+
+        throw new Error("Tạo user thất bại");
+      }
+
+      alert("Tạo người dùng thành công");
+      router.push("/home");
+
+    } catch (err) {
+      alert("Lỗi hệ thống");
+    }
   };
+
 
   return (
     <div className="create-user">
@@ -41,60 +80,37 @@ const CreateUser: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Họ và tên</label>
+          <label>Tên đăng nhập *</label>
           <input
-            type="text"
-            name="fullname"
-            value={form.fullname}
+            name="username"
+            value={form.username}
             onChange={handleChange}
-            required
           />
+          {errors.username && (
+            <p className="error">{errors.username}</p>
+          )}
+        </div>
+
+
+        <div className="form-group">
+          <label>Họ và tên <span color="red">*</span></label>
+          <input name="fullName" value={form.fullName} onChange={handleChange} />
         </div>
 
         <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+          <label>Email <span color="red">*</span></label>
+          <input name="email" value={form.email} onChange={handleChange} />
+          {errors.email && <p className="error">{errors.email}</p>}
         </div>
 
         <div className="form-group">
-          <label>Số điện thoại</label>
-          <input
-            type="text"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-          />
+          <label>Mật khẩu <span color="red">*</span></label>
+          <input type="password" name="password" value={form.password} onChange={handleChange} />
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
-        <div className="form-group">
-          <label>Mật khẩu</label>
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label>Vai trò</label>
-            <select name="role" value={form.role} onChange={handleChange}>
-              <option value="USER">User</option>
-              <option value="ADMIN">Admin</option>
-            </select>
-          </div>
-        </div>
-
-        <button type="submit" className="btn-submit">
-          Thêm người dùng
+        <button disabled={loading} type="submit">
+          {loading ? "Đang tạo..." : "Thêm người dùng"}
         </button>
       </form>
     </div>
