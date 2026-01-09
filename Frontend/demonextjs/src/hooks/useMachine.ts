@@ -9,10 +9,14 @@ import {
   MachineUpdateRequest,
   MachineFilterParams,
 } from "@/types";
-import { message } from 'antd';
+import { App } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { getErrorMessageKey } from '@/utils/errorUtils';
 
 export function useMachines(initialFilters?: MachineFilterParams) {
   const queryClient = useQueryClient();
+  const { message } = App.useApp();
+  const { t } = useTranslation();
   const [filters, setFilters] = useState<MachineFilterParams>(initialFilters || {
     page: 0,
     size: 10,
@@ -70,10 +74,11 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     mutationFn: (data: MachineCreateRequest) => machineApi.createMachine(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
-      message.success('Tạo máy thành công');
+      message.success(t('machine.form.button.create') + ' ' + t('common.success'));
     },
     onError: (error: any) => {
-      message.error(error?.message || 'Tạo máy thất bại');
+      const errorKey = getErrorMessageKey(error);
+      message.error(t(errorKey));
     },
   });
 
@@ -83,10 +88,11 @@ export function useMachines(initialFilters?: MachineFilterParams) {
       machineApi.updateMachine(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
-      message.success('Cập nhật máy thành công');
+      message.success(t('machine.form.button.update') + ' ' + t('common.success'));
     },
     onError: (error: any) => {
-      message.error(error?.message || 'Cập nhật máy thất bại');
+      const errorKey = getErrorMessageKey(error);
+      message.error(t(errorKey));
     },
   });
 
@@ -95,10 +101,11 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     mutationFn: (id: string) => machineApi.deleteMachine(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['machines'] });
-      message.success('Xóa máy thành công');
+      message.success(t('machine.delete_confirm.title') + ' ' + t('common.success'));
     },
     onError: (error: any) => {
-      message.error(error?.message || 'Xóa máy thất bại');
+      const errorKey = getErrorMessageKey(error);
+      message.error(t(errorKey));
     },
   });
 

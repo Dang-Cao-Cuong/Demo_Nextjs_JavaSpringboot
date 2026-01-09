@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, Button, Spin, Empty } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useMachine, useMachines } from '@/hooks/useMachine';
-import MachineForm from '@/components/machines/machineForm';
+import MachineForm from '@/components/machines/MachineForm';
 import { MachineUpdateRequest } from '@/types';
 import { useTranslation } from 'react-i18next';
 export default function EditMachinePage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,9 +41,9 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
           onClick={() => router.back()}
           style={{ marginBottom: '16px' }}
         >
-         {t('common.back')}
+          {t('common.back')}
         </Button>
-        <Empty 
+        <Empty
           description={
             <>
               <div>{t('machine.label.not_found_title')}</div>
@@ -51,7 +51,7 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
                 {t('machine.label.not_found_desc')}
               </div>
             </>
-          } 
+          }
         />
       </div>
     );
@@ -70,13 +70,13 @@ export default function EditMachinePage({ params }: { params: Promise<{ id: stri
         </Button>
         <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{t('machine.form.update_title')}</h1>
         <p style={{ margin: '8px 0 0 0', color: '#666' }}>
-         {t('machine.form.update_subtitle', { name: machine.name })}
+          {t('machine.form.update_subtitle', { name: machine.name })}
         </p>
       </div>
 
       {/* Form */}
-      <Card 
-        style={{ 
+      <Card
+        style={{
           border: '2px solid #d9d9d9',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
         }}

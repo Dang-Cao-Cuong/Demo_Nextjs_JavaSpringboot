@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import { Machine, MachineFilterParams } from '@/types';
 import MachineCard from './MachineCard';
-import MachineFilter from "./machineFilter"
+import MachineFilter from "./MachineFilter"
 import { Row, Col, Pagination, Empty } from 'antd';
 import { useTranslation } from 'react-i18next';
 interface MachineListProps {

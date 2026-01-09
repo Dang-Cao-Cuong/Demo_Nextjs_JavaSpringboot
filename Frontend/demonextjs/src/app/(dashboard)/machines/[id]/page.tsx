@@ -15,7 +15,7 @@ import { Card, Button, Spin, Empty, Descriptions, Space, Divider } from 'antd';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
-import { MachineStatusBadge } from '@/components/machines/machineStatusBadge';
+import { MachineStatusBadge } from '@/components/machines/MachineStatusBadge';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
 import { useMachine } from '@/hooks/useMachine';
 import { useMachines } from '@/hooks/useMachine';

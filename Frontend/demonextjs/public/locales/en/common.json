@@ -55,11 +55,11 @@
       "manufacturing_year": "Manufacturing Year:",
       "subtitle": "Enter information to create a new machine",
       "status": {
-      "ACTIVE": "Active",
-      "INACTIVE": "Inactive",
-      "MAINTENANCE": "Maintenance",
-      "ERROR": "Error"
-    }
+        "ACTIVE": "Active",
+        "INACTIVE": "Inactive",
+        "MAINTENANCE": "Maintenance",
+        "ERROR": "Error"
+      }
     },
     "delete_confirm": {
       "title": "Confirm Deletion",
@@ -109,6 +109,18 @@
       "medium": "Medium",
       "low": "Low"
     }
+  },
+  "error": {
+    "default": "An error occurred",
+    "http_400": "Invalid request",
+    "http_401": "Session expired",
+    "http_403": "You do not have permission to perform this action",
+    "http_404": "Data not found",
+    "http_409": "Data already exists",
+    "http_500": "System error",
+    "machine_create_failed": "Failed to create machine",
+    "machine_update_failed": "Failed to update machine",
+    "machine_delete_failed": "Failed to delete machine"
   },
   "common": {
     "back": "Back",
