@@ -7,6 +7,7 @@ import { AuthProvider as ZustandAuthProvider } from "@/providers/AuthProvider";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import AntdRegistry from "./antd-registry";
+import { App } from "antd";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { I18nextProvider } from "@/providers/I18nextProvider";
 import { WebSocketProvider } from "@/providers/WebSocketProvider";
@@ -40,16 +41,18 @@ export default function RootLayout({
         <I18nextProvider>
           <AntdRegistry>
             <ThemeProvider>
-              <ErrorBoundary>
-                <QueryProvider>
-                  <AuthProvider>
-                    <WebSocketProvider>
-                      <MachineErrorListener />
-                      {children}
-                    </WebSocketProvider>
-                  </AuthProvider>
-                </QueryProvider>
-              </ErrorBoundary>
+              <App>
+                <ErrorBoundary>
+                  <QueryProvider>
+                    <AuthProvider>
+                      <WebSocketProvider>
+                        <MachineErrorListener />
+                        {children}
+                      </WebSocketProvider>
+                    </AuthProvider>
+                  </QueryProvider>
+                </ErrorBoundary>
+              </App>
             </ThemeProvider>
           </AntdRegistry>
         </I18nextProvider>
