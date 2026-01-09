@@ -103,7 +103,7 @@ export function LoginForm() {
           name="password"
           rules={[
             { required: true, message: t('auth.passwordRequired') },
-            { min: 4, message: t('auth.passwordMinLength') },
+            { min: 8, message: t('auth.passwordMinLength') },
           ]}
         >
           <Input.Password

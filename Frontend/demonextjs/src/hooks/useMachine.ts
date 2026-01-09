@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { machineApi } from '@/services';
+import { useEffect, useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  Machine,
+  fetchMachines,
+  createMachine,
+  updateMachine,
+  deleteMachine,
+  setFilters as setReduxFilters,
+} from '@/redux/slices/machineSlice';
+import {
   MachineCreateRequest,
   MachineUpdateRequest,
   MachineFilterParams,
@@ -14,120 +19,128 @@ import { useTranslation } from 'react-i18next';
 import { getErrorMessageKey } from '@/utils/errorUtils';
 
 export function useMachines(initialFilters?: MachineFilterParams) {
-  const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
   const { message } = App.useApp();
   const { t } = useTranslation();
-  const [filters, setFilters] = useState<MachineFilterParams>(initialFilters || {
-    page: 0,
-    size: 10,
-  });
 
-  // Fetch machines
   const {
-    data: allMachines,
+    filteredMachines, // Use filtered list for display
+    totalElements,
+    totalPages,
+    currentPage,
+    pageSize,
     isLoading,
-    isError,
     error,
-    refetch,
-  } = useQuery({
-    queryKey: ['machines'],
-    queryFn: () => machineApi.getAllMachines(),
-  });
+    isCreating,
+    isUpdating,
+    isDeleting,
+    filters
+  } = useAppSelector((state) => state.machines);
 
-  // Apply filters
-  const filteredMachines = useMemo(() => {
-    return allMachines ? allMachines.filter((machine) => {
-      // Filter by name
-      if (filters.name && !machine.name.toLowerCase().includes(filters.name.toLowerCase())) {
-        return false;
-      }
+  // Initial fetch
+  useEffect(() => {
+    dispatch(fetchMachines());
+  }, [dispatch]);
 
-      // Filter by model
-      if (filters.model && !machine.model.toLowerCase().includes(filters.model.toLowerCase())) {
-        return false;
-      }
+  // Set initial filters if provided and different from current
+  useEffect(() => {
+    if (initialFilters) {
+      dispatch(setReduxFilters(initialFilters));
+    }
+  }, [dispatch, initialFilters]);
 
-      // Filter by location
-      if (filters.location && !machine.location.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
+  const handleSetFilters = useCallback((newFilters: MachineFilterParams | ((prev: MachineFilterParams) => MachineFilterParams)) => {
+    let resolvedFilters: MachineFilterParams;
+    if (typeof newFilters === 'function') {
+      // We can't access previous filters easily in this pattern without selecting it or pass it.
+      // However, setReduxFilters merges, so we usually pass partial updates.
+      // To support function update pattern properly we need to resolve it against current redux state.
+      // But normally we just pass the object update.
+      // For simplicity and to match previous interface, if function is passed we warn or try to support.
+      // Simpler: Just resolve it against current filters from selector
+      resolvedFilters = newFilters(filters);
+    } else {
+      resolvedFilters = newFilters;
+    }
+    dispatch(setReduxFilters(resolvedFilters));
+  }, [dispatch, filters]);
 
-      // Filter by status
-      if (filters.status && machine.status !== filters.status) {
-        return false;
-      }
 
-      return true;
-    }) : [];
-  }, [allMachines, filters]);
-
-  // Client-side pagination
-  const paginatedMachines = useMemo(() => {
-    return filteredMachines.slice(
-      filters.page! * filters.size!,
-      (filters.page! + 1) * filters.size!
-    );
-  }, [filteredMachines, filters.page, filters.size]);
-
-  // Create machine
-  const createMutation = useMutation({
-    mutationFn: (data: MachineCreateRequest) => machineApi.createMachine(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['machines'] });
+  const handleCreateMachine = useCallback(async (data: MachineCreateRequest, options?: { onSuccess?: () => void }) => {
+    try {
+      await dispatch(createMachine(data)).unwrap();
       message.success(t('machine.form.button.create') + ' ' + t('common.success'));
-    },
-    onError: (error: any) => {
-      const errorKey = getErrorMessageKey(error);
+      options?.onSuccess?.();
+    } catch (err: any) {
+      const errorKey = getErrorMessageKey(err);
       message.error(t(errorKey));
-    },
-  });
+    }
+  }, [dispatch, message, t]);
 
-  // Update machine
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: MachineUpdateRequest }) =>
-      machineApi.updateMachine(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['machines'] });
+  const handleUpdateMachine = useCallback(async ({ id, data }: { id: string; data: MachineUpdateRequest }, options?: { onSuccess?: () => void }) => {
+    try {
+      await dispatch(updateMachine({ id, data })).unwrap();
       message.success(t('machine.form.button.update') + ' ' + t('common.success'));
-    },
-    onError: (error: any) => {
-      const errorKey = getErrorMessageKey(error);
+      options?.onSuccess?.();
+    } catch (err: any) {
+      const errorKey = getErrorMessageKey(err);
       message.error(t(errorKey));
-    },
-  });
+    }
+  }, [dispatch, message, t]);
 
-  // Delete machine
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => machineApi.deleteMachine(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['machines'] });
+  const handleDeleteMachine = useCallback(async (id: string) => {
+    try {
+      await dispatch(deleteMachine(id)).unwrap();
       message.success(t('machine.delete_confirm.title') + ' ' + t('common.success'));
-    },
-    onError: (error: any) => {
-      const errorKey = getErrorMessageKey(error);
+    } catch (err: any) {
+      const errorKey = getErrorMessageKey(err);
       message.error(t(errorKey));
-    },
-  });
+    }
+  }, [dispatch, message, t]);
+
+  // For manual refetch if needed (though Redux keeps state)
+  const refetch = useCallback(() => {
+    dispatch(fetchMachines());
+  }, [dispatch]);
 
   return {
-    machines: paginatedMachines,
-    totalPages: filteredMachines ? Math.ceil(filteredMachines.length / (filters.size || 10)) : 0,
-    totalElements: filteredMachines?.length || 0,
-    currentPage: filters.page || 0,
+    machines: filteredMachines,
+    totalPages,
+    totalElements,
+    currentPage,
     isLoading,
-    isError,
+    isError: !!error,
     error,
     filters,
-    setFilters,
+    setFilters: handleSetFilters,
     refetch,
-    createMachine: createMutation.mutate,
-    updateMachine: updateMutation.mutate,
-    deleteMachine: deleteMutation.mutate,
-    isCreating: createMutation.isPending,
-    isUpdating: updateMutation.isPending,
-    isDeleting: deleteMutation.isPending,
+    createMachine: handleCreateMachine,
+    updateMachine: handleUpdateMachine,
+    deleteMachine: handleDeleteMachine,
+    isCreating,
+    isUpdating,
+    isDeleting,
   };
 }
+
+// Keep useMachine for single detail view if needed, or migrate it too. 
+// For now, let's keep useMachine mostly as is but maybe using Redux cache if available?
+// Actually the previous useMachine used useQuery with getMachineById. 
+// We can keep it using React Query OR migrate to Redux. 
+// Migration plan said "Refactor Hook". Let's migrate single machine fetch to Redux or just keep using API directly?
+// Usually single fetch is fine with API if we don't store "currentSelectedMachine" in Redux.
+// But to be consistent, let's leave useMachine (singular) as a simple API wrapper or keep usage of react-query only for details 
+// IF we didn't add "selectedMachine" to slice.
+// My machineSlice didn't have selectedMachine. So I will keep useMachine (singular) using useQuery or just direct API call for now, 
+// OR simpler: just return the machine from the list if found?
+// Best practice: Fetch fresh data for edit/detail. 
+// For now I will NOT touch useMachine (singular) unless necessary, but the file replaces both.
+// I should preserve useMachine code but maybe comment out or leave as legacy if not used, 
+// OR just leave it using React Query from the original file? 
+// The prompt implies moving "Machine data" generally.
+// I will keep useMachine using React Query for now to reduce scope/risk, as the list breakdown is the main goal.
+import { useQuery } from '@tanstack/react-query';
+import { machineApi } from '@/services';
 
 export function useMachine(id: string) {
   const {

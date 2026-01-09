@@ -6,10 +6,14 @@ export const metadata: Metadata = {
   description: 'Đăng nhập vào hệ thống quản lý máy CNC',
 };
 
+import { Suspense } from 'react';
+
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 p-4">
-      <LoginForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
