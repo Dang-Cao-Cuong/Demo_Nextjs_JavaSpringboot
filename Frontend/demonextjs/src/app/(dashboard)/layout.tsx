@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Spin, Button, Space } from 'antd';
+import { Spin, Button, Space, theme, Layout } from 'antd';
 import {
   LogoutOutlined,
   UserOutlined,
@@ -11,8 +11,8 @@ import {
 } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { logout } from '@/redux/slices/authSlice';
-import { WebSocketProvider } from '@/providers/WebSocketProvider';
-import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
+
+
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 export default function DashboardLayout({
@@ -35,6 +35,13 @@ export default function DashboardLayout({
     }
   }, [isAuthenticated, loading, router, pathname]);
 
+  // Use Ant Design tokens
+  const {
+    token: { colorBgContainer, colorBgLayout, colorText },
+  } = theme.useToken();
+
+  const { Header, Content } = Layout;
+
   // Hiển thị loading khi đang kiểm tra authentication
   if (loading) {
     return (
@@ -43,7 +50,7 @@ export default function DashboardLayout({
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#ffffff'
+        backgroundColor: colorBgContainer
       }}>
         <Spin size="large" />
       </div>
@@ -60,76 +67,66 @@ export default function DashboardLayout({
   };
 
   return (
-    <WebSocketProvider>
-      <div style={{
-        minHeight: '100vh',
-        backgroundColor: '#f5f5f5'
-      }}
-      >
-
-        {/* Listener cho lỗi máy */}
-        <MachineErrorListener />
-
-        {/* Header with Logout Button */}
-        <div style={{
-          backgroundColor: '#ffffff',
-          borderBottom: '1px solid #e8e8e8',
-          padding: '12px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: '#1890ff' }}>
-              {t('app.description')}
-            </h2>
-          </div>
-          <Space size="small">
-            <Button
-              type={pathname === '/' ? 'primary' : 'text'}
-              icon={<HomeOutlined />}
-              onClick={() => router.push('/home')}
-            >
-              {t('nav.dashboard')}
-            </Button>
-
-            <Button
-              type={pathname?.startsWith('/machines') ? 'primary' : 'text'}
-              icon={<AppstoreOutlined />}
-              onClick={() => router.push('/machines')}
-            >
-              {t('nav.machines')}
-            </Button>
-          </Space>
-          <Space size="middle">
-            <LanguageSwitcher />
-            {user && (
-              <span style={{ color: '#666', fontSize: '14px' }}>
-                <UserOutlined style={{ marginRight: '6px' }} />
-                {user.fullname || user.username}
-              </span>
-            )}
-
-            <Button
-              type="primary"
-              danger
-              icon={<LogoutOutlined />}
-              onClick={handleLogout}
-            >
-              {t('auth.logout')}
-            </Button>
-          </Space>
+    <Layout style={{ minHeight: '100vh', background: colorBgLayout }}>
+      {/* Header with Logout Button */}
+      <Header style={{
+        background: colorBgContainer,
+        borderBottom: '1px solid #e8e8e8',
+        padding: '0 24px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: '#1890ff' }}>
+            {t('app.description')}
+          </h2>
         </div>
+        <Space size="small">
+          <Button
+            type={pathname === '/' ? 'primary' : 'text'}
+            icon={<HomeOutlined />}
+            onClick={() => router.push('/home')}
+          >
+            {t('nav.dashboard')}
+          </Button>
 
-        {/* Main Content */}
-        <div>
-          {children}
-        </div>
-      </div>
-    </WebSocketProvider>
+          <Button
+            type={pathname?.startsWith('/machines') ? 'primary' : 'text'}
+            icon={<AppstoreOutlined />}
+            onClick={() => router.push('/machines')}
+          >
+            {t('nav.machines')}
+          </Button>
+        </Space>
+        <Space size="middle">
+          <LanguageSwitcher />
+          {user && (
+            <span style={{ color: colorText, fontSize: '14px' }}>
+              <UserOutlined style={{ marginRight: '6px' }} />
+              {user.fullname || user.username}
+            </span>
+          )}
+
+          <Button
+            type="primary"
+            danger
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+          >
+            {t('auth.logout')}
+          </Button>
+        </Space>
+      </Header>
+
+      {/* Main Content */}
+      <Content>
+        {children}
+      </Content>
+    </Layout>
   );
 }
