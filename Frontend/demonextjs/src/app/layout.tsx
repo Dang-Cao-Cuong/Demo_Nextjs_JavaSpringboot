@@ -13,6 +13,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import { I18nextProvider } from "@/providers/I18nextProvider";
 import { WebSocketProvider } from "@/providers/WebSocketProvider";
 import { MachineErrorListener } from "@/components/machines/MachineErrorListener";
+import ThemeCustomizer from "@/components/common/ThemeCustomizer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
                       <WebSocketProvider>
                         <MachineErrorListener />
                         {children}
+                        <ThemeCustomizer />
                       </WebSocketProvider>
                     </ReduxProvider>
                   </QueryProvider>

@@ -9,7 +9,7 @@ import MachineList from '@/components/machines/MachineList';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
 import MachineForm from '@/components/machines/MachineForm';
 import { Machine, MachineFilterParams, MachineCreateRequest } from '@/types';
-import { MachineErrorListener } from '@/components/machines/MachineErrorListener';
+
 import { useTranslation } from 'react-i18next';
 
 export default function MachinesPage() {
@@ -108,7 +108,7 @@ export default function MachinesPage() {
 
   return (
     <>
-      <MachineErrorListener />
+
       <div style={{ padding: '24px' }}>
         {/* Header */}
         <Card style={{ marginBottom: '24px' }}>
