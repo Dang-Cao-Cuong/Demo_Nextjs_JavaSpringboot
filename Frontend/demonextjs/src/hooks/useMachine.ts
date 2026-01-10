@@ -7,6 +7,7 @@ import {
   createMachine,
   updateMachine,
   deleteMachine,
+  restoreMachine,
   setFilters as setReduxFilters,
 } from '@/redux/slices/machineSlice';
 import {
@@ -34,6 +35,7 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     isCreating,
     isUpdating,
     isDeleting,
+    isRestoring, // Add isRestoring status
     filters
   } = useAppSelector((state) => state.machines);
 
@@ -98,6 +100,17 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     }
   }, [dispatch, message, t]);
 
+  const handleRestoreMachine = useCallback(async (id: string, options?: { onSuccess?: () => void }) => {
+    try {
+      await dispatch(restoreMachine(id)).unwrap();
+      message.success(t('machine.label.restore_success', 'Khôi phục máy thành công')); // Add translation key later or use default
+      options?.onSuccess?.();
+    } catch (err: any) {
+      const errorKey = getErrorMessageKey(err);
+      message.error(t(errorKey));
+    }
+  }, [dispatch, message, t]);
+
   // For manual refetch if needed (though Redux keeps state)
   const refetch = useCallback(() => {
     dispatch(fetchMachines());
@@ -120,6 +133,8 @@ export function useMachines(initialFilters?: MachineFilterParams) {
     isCreating,
     isUpdating,
     isDeleting,
+    restoreMachine: handleRestoreMachine,
+    isRestoring,
   };
 }
 

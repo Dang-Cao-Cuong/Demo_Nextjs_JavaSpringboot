@@ -1,20 +1,22 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
-import { Input, Button, Select, Card } from 'antd';
+import { Input, Button, Select, Card, Switch, Form } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { MachineFilterParams } from '@/types';
 interface MachineFilterProps {
+  initialFilters?: MachineFilterParams;
   onFilterChange: (filters: MachineFilterParams) => void;
 }
 
-export function MachineFilter({ onFilterChange }: MachineFilterProps) {
+export function MachineFilter({ initialFilters, onFilterChange }: MachineFilterProps) {
   const [filters, setFilters] = useState({
-    name: '',
-    model: '',
-    location: '',
-    status: '',
+    name: initialFilters?.name || '',
+    model: initialFilters?.model || '',
+    location: initialFilters?.location || '',
+    status: initialFilters?.status || '',
+    showDeleted: initialFilters?.showDeleted || false,
   });
   const { t } = useTranslation();
   // Auto-apply filters when they change
@@ -23,7 +25,7 @@ export function MachineFilter({ onFilterChange }: MachineFilterProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  const handleFilterChange = useCallback((key: string, value: string) => {
+  const handleFilterChange = useCallback((key: string, value: string | boolean) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   }, []);
 
@@ -33,6 +35,7 @@ export function MachineFilter({ onFilterChange }: MachineFilterProps) {
       model: '',
       location: '',
       status: '',
+      showDeleted: false,
     });
   }, []);
 
@@ -79,6 +82,15 @@ export function MachineFilter({ onFilterChange }: MachineFilterProps) {
           style={{ width: '100%' }}
           options={statusOptions}
         />
+
+        {/* Show Deleted Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{ marginRight: '8px' }}>{t('machine.filter.show_deleted', 'Hiển thị máy đã xóa')}:</span>
+          <Switch
+            checked={filters.showDeleted}
+            onChange={(checked) => handleFilterChange('showDeleted', checked)}
+          />
+        </div>
       </div>
 
       {/* Action Buttons */}
