@@ -20,6 +20,7 @@ interface MachineState {
     isCreating: boolean;
     isUpdating: boolean;
     isDeleting: boolean;
+    isRestoring?: boolean;
 }
 
 const initialState: MachineState = {
@@ -38,6 +39,7 @@ const initialState: MachineState = {
     isCreating: false,
     isUpdating: false,
     isDeleting: false,
+    isRestoring: false,
 };
 
 // Async Thunks
@@ -85,6 +87,18 @@ export const deleteMachine = createAsyncThunk(
             return id;
         } catch (error: any) {
             return rejectWithValue(error.message || 'Failed to delete machine');
+        }
+    }
+);
+
+export const restoreMachine = createAsyncThunk(
+    'machines/restore',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            await machineApi.restoreMachine(id);
+            return id;
+        } catch (error: any) {
+            return rejectWithValue(error.message || 'Failed to restore machine');
         }
     }
 );
@@ -171,6 +185,24 @@ const machineSlice = createSlice({
             .addCase(deleteMachine.rejected, (state, action) => {
                 state.isDeleting = false;
                 state.error = action.payload as string;
+            })
+            // Restore
+            .addCase(restoreMachine.pending, (state) => {
+                state.isRestoring = true;
+                state.error = null;
+            })
+            .addCase(restoreMachine.fulfilled, (state, action) => {
+                state.isRestoring = false;
+                // Update the local state to reflect restoration
+                const index = state.machines.findIndex(m => m.id === action.payload);
+                if (index !== -1) {
+                    state.machines[index] = { ...state.machines[index], deleted: false };
+                    applyFilters(state);
+                }
+            })
+            .addCase(restoreMachine.rejected, (state, action) => {
+                state.isRestoring = false;
+                state.error = action.payload as string;
             });
     },
 });
@@ -191,6 +223,11 @@ function applyFilters(state: MachineState) {
     }
     if (filters.status && filters.status !== 'all') { // Assuming 'all' might be passed or just string check
         result = result.filter(m => m.status === filters.status);
+    }
+
+    // Filter Deleted
+    if (!filters.showDeleted) {
+        result = result.filter(m => !m.deleted);
     }
 
     state.totalElements = result.length;

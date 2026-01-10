@@ -12,9 +12,12 @@ interface MachineListProps {
   currentPage: number;
   totalElements: number;
   pageSize: number;
+  currentFilters: MachineFilterParams;
   onPageChange: (page: number, pageSize: number) => void;
   onEdit: (machine: Machine) => void;
+
   onDelete: (id: string) => void;
+  onRestore?: (id: string) => void;
   onFilterChange: (filters: MachineFilterParams) => void;
   onView?: (id: string) => void;
 }
@@ -25,9 +28,11 @@ export function MachineList({
   currentPage,
   totalElements,
   pageSize,
+  currentFilters,
   onPageChange,
   onEdit,
   onDelete,
+  onRestore,
   onFilterChange,
   onView,
 }: MachineListProps) {
@@ -35,7 +40,7 @@ export function MachineList({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Bộ lọc */}
-      <MachineFilter onFilterChange={onFilterChange} />
+      <MachineFilter initialFilters={currentFilters} onFilterChange={onFilterChange} />
 
       {/* Danh sách machines */}
       {machines.length === 0 ? (
@@ -49,6 +54,7 @@ export function MachineList({
                   machine={machine}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  onRestore={onRestore}
                   onView={onView}
                 />
               </Col>

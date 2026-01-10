@@ -10,8 +10,9 @@ import {
     EnvironmentOutlined,
     SettingOutlined,
     DashboardOutlined,
+    UndoOutlined,
 } from '@ant-design/icons';
-import { Card, Button, Spin, Empty, Descriptions, Space, Divider } from 'antd';
+import { Card, Button, Spin, Empty, Descriptions, Space, Divider, Tag } from 'antd';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
@@ -28,13 +29,21 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
     const { id } = use(params);
     const router = useRouter();
     const { machine, isLoading, error } = useMachine(id);
-    const { deleteMachine, isDeleting } = useMachines();
+    const { deleteMachine, restoreMachine, isDeleting, isRestoring } = useMachines();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const { t } = useTranslation();
     const handleDeleteConfirm = () => {
         deleteMachine(id);
         setShowDeleteDialog(false);
         router.push('/machines');
+    };
+
+    const handleRestoreClick = () => {
+        restoreMachine(id, {
+            onSuccess: () => {
+                router.push('/machines'); // Redirect back to list or just refresh
+            }
+        });
     };
 
     if (isLoading) {
@@ -93,19 +102,34 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                         onClick={() => router.back()}
                         type="text"
                     />
-                    <h1 style={{
-                        fontSize: '28px',
-                        fontWeight: 'bold',
-                        margin: 0,
-                        color: '#1f2937'
-                    }}>
-                        {machine.name}
-                    </h1>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <h1 style={{
+                            fontSize: '28px',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            color: '#1f2937'
+                        }}>
+                            {machine.name}
+                        </h1>
+                        {machine.deleted && <Tag color="error">{t('matrix.label.deleted', 'Đã xóa')}</Tag>}
+                    </div>
                 </div>
+
+
                 <Space>
+                    {machine.deleted && (
+                        <Button
+                            icon={<UndoOutlined />}
+                            onClick={handleRestoreClick}
+                            loading={isRestoring}
+                        >
+                            {t('common.restore', 'Khôi phục')}
+                        </Button>
+                    )}
                     <Button
                         icon={<EditOutlined />}
                         onClick={() => router.push(`/machines/${id}/edit`)}
+                        disabled={machine.deleted}
                     >
                         {t('common.edit')}
                     </Button>
@@ -113,6 +137,7 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => setShowDeleteDialog(true)}
+                        disabled={machine.deleted}
                     >
                         {t('common.delete')}
                     </Button>
@@ -201,6 +226,6 @@ export default function MachineDetailPage({ params }: MachineDetailPageProps) {
                 machineName={machine.name}
                 loading={isDeleting}
             />
-        </div>
+        </div >
     );
 }

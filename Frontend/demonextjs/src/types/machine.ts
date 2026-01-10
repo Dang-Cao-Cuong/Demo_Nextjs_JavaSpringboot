@@ -48,6 +48,7 @@ export interface Machine {
     updatedAt?: string;
     createdBy?: string;
     updatedBy?: string;
+    deleted: boolean;
 }
 
 export interface MachineCreateRequest {
@@ -74,6 +75,7 @@ export interface MachineFilterParams {
     page?: number;
     size?: number;
     sort?: string;
+    showDeleted?: boolean;
 }
 
 export interface MachinesResponse {

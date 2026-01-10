@@ -25,6 +25,7 @@ export default function MachinesPage() {
     setFilters,
     deleteMachine,
     isDeleting,
+    restoreMachine, // Destructure restoration function
     createMachine,
     isCreating,
     updateMachine,
@@ -63,6 +64,10 @@ export default function MachinesPage() {
       setDeleteDialogOpen(true);
     }
   }, [machines]);
+
+  const handleRestore = useCallback((id: string) => {
+    restoreMachine(id);
+  }, [restoreMachine]);
 
   const handleDeleteConfirm = useCallback(() => {
     if (selectedMachine) {
@@ -138,9 +143,11 @@ export default function MachinesPage() {
           currentPage={currentPage}
           totalElements={totalElements}
           pageSize={filters.size || 10}
+          currentFilters={filters}
           onPageChange={handlePageChange}
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
+          onRestore={handleRestore}
           onFilterChange={handleFilterChange}
           onView={handleView}
         />

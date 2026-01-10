@@ -6,7 +6,7 @@ export const machineApi = {
     getAllMachines: async (): Promise<Machine[]> => {
         try {
             console.log('Calling GET /machines...');
-            const response = await apiClient.get<ApiResponse<Machine[]>>('/machines/active');
+            const response = await apiClient.get<ApiResponse<Machine[]>>('/machines');
             if (response.data.code !== 1000) {
                 throw new Error(response.data.message || 'Failed to get machines');
             }
@@ -55,6 +55,14 @@ export const machineApi = {
         const response = await apiClient.delete<ApiResponse<void>>(`/machines/${id}`);
         if (response.data.code !== 1000) {
             throw new Error(response.data.message || 'Failed to delete machine');
+        }
+    },
+
+    // Khôi phục machine
+    restoreMachine: async (id: string): Promise<void> => {
+        const response = await apiClient.put<ApiResponse<void>>(`/machines/restore/${id}`);
+        if (response.data.code !== 1000) {
+            throw new Error(response.data.message || 'Failed to restore machine');
         }
     }
 };
