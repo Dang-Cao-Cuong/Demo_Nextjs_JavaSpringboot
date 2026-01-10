@@ -27,7 +27,7 @@ export default function MachineCard({ machine, onEdit, onDelete, onRestore, onVi
         onRestore?.(machine.id);
       }}
     >
-      {t('common.restore', 'Khôi phục')}
+      {t('common.restore')}
     </Button>
   ] : [
     <Button

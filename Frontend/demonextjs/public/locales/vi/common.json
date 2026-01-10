@@ -73,7 +73,8 @@
       "search_location": "Tìm theo vị trí",
       "select_status": "Chọn trạng thái",
       "all_statuses": "Tất cả",
-      "reset": "Reset bộ lọc"
+      "reset": "Reset bộ lọc",
+      "show_deleted": "Hiển thị máy đã xóa"
     },
     "form": {
       "create_title": "Tạo máy mới",
@@ -116,7 +117,7 @@
     "http_401": "Phiên đăng nhập hết hạn",
     "http_403": "Bạn không có quyền thực hiện hành động này",
     "http_404": "Không tìm thấy dữ liệu",
-    "http_409": "Dữ liệu đã tồn tại",
+    "http_409": "Dữ liệu đã tồn tại (hoặc trùng mã/tên máy)",
     "http_500": "Lỗi hệ thống",
     "machine_create_failed": "Tạo máy thất bại",
     "machine_update_failed": "Cập nhật máy thất bại",
@@ -136,6 +137,7 @@
     "search": "Tìm kiếm",
     "filter": "Lọc",
     "refresh": "Làm mới",
-    "or": "hoặc"
+    "or": "hoặc",
+    "restore": "Khôi phục"
   }
 }

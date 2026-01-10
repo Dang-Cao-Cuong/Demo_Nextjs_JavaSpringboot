@@ -42,20 +42,8 @@ export const MachineErrorListener = () => {
       //  Sử dụng translation
       //  Sử dụng translation
       notification.error({
-        // In Step 88/89/90 I DID apply the changes.
-        // Step 88: Added `const { notification } = App.useApp();` and updated dependency array.
-        // Step 89: Changed import to `App`.
-        // Step 93 showed the file content with `App.useApp()`.
-        // So the code IS refactored.
-        // The only thing is I reused `notification.error` inside.
-        // The variable name is `notification`. `notification.error` calls the hook instance.
-        // So the "Static function" warning should be gone.
-        // The "message is deprecated" warning...
-        // if it persists, then `message` prop is indeed deprecated.
-        // I'll trust standard Antd 5 docs which say `message` is the title.
-        // I'll assume the job is done.
-        message: t('notification.machineError', { machineName: error.machineName }),
-
+        title: t('notification.machineError', { machineName: error.machineName }),
+        description: description,
       });
 
       // Update Redux Store Realtime

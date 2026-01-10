@@ -62,6 +62,17 @@ export const createMachine = createAsyncThunk(
             const result = await machineApi.createMachine(data);
             return result;
         } catch (error: any) {
+            // Return serializable error object to allow getErrorMessageKey to work
+            if (error.isAxiosError) {
+                return rejectWithValue({
+                    message: error.message,
+                    isAxiosError: true,
+                    response: {
+                        status: error.response?.status,
+                        data: error.response?.data
+                    }
+                });
+            }
             return rejectWithValue(error.message || 'Failed to create machine');
         }
     }
@@ -74,6 +85,16 @@ export const updateMachine = createAsyncThunk(
             const result = await machineApi.updateMachine(id, data);
             return result;
         } catch (error: any) {
+            if (error.isAxiosError) {
+                return rejectWithValue({
+                    message: error.message,
+                    isAxiosError: true,
+                    response: {
+                        status: error.response?.status,
+                        data: error.response?.data
+                    }
+                });
+            }
             return rejectWithValue(error.message || 'Failed to update machine');
         }
     }
@@ -153,7 +174,9 @@ const machineSlice = createSlice({
             })
             .addCase(createMachine.rejected, (state, action) => {
                 state.isCreating = false;
-                state.error = action.payload as string;
+                // Handle object payload if it exists, otherwise string
+                const payload = action.payload as any;
+                state.error = payload?.message || payload || 'Failed to create machine';
             })
             // Update
             .addCase(updateMachine.pending, (state) => {
@@ -170,7 +193,8 @@ const machineSlice = createSlice({
             })
             .addCase(updateMachine.rejected, (state, action) => {
                 state.isUpdating = false;
-                state.error = action.payload as string;
+                const payload = action.payload as any;
+                state.error = payload?.message || payload || 'Failed to update machine';
             })
             // Delete
             .addCase(deleteMachine.pending, (state) => {
@@ -179,8 +203,12 @@ const machineSlice = createSlice({
             })
             .addCase(deleteMachine.fulfilled, (state, action) => {
                 state.isDeleting = false;
-                state.machines = state.machines.filter(m => m.id !== action.payload);
-                applyFilters(state);
+                // Soft delete: Mark as deleted instead of removing
+                const index = state.machines.findIndex(m => m.id === action.payload);
+                if (index !== -1) {
+                    state.machines[index] = { ...state.machines[index], deleted: true };
+                    applyFilters(state);
+                }
             })
             .addCase(deleteMachine.rejected, (state, action) => {
                 state.isDeleting = false;

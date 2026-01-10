@@ -85,7 +85,7 @@ export function MachineFilter({ initialFilters, onFilterChange }: MachineFilterP
 
         {/* Show Deleted Toggle */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span style={{ marginRight: '8px' }}>{t('machine.filter.show_deleted', 'Hiển thị máy đã xóa')}:</span>
+          <span style={{ marginRight: '8px' }}>{t('machine.filter.show_deleted')}:</span>
           <Switch
             checked={filters.showDeleted}
             onChange={(checked) => handleFilterChange('showDeleted', checked)}

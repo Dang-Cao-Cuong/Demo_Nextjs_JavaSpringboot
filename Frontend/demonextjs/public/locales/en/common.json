@@ -73,7 +73,8 @@
       "search_location": "Search by location",
       "select_status": "Select status",
       "all_statuses": "All",
-      "reset": "Reset filter"
+      "reset": "Reset filter",
+      "show_deleted": "Show deleted machines"
     },
     "form": {
       "create_title": "Create New Machine",
@@ -116,7 +117,7 @@
     "http_401": "Session expired",
     "http_403": "You do not have permission to perform this action",
     "http_404": "Data not found",
-    "http_409": "Data already exists",
+    "http_409": "Data already exists (duplicate ID/name)",
     "http_500": "System error",
     "machine_create_failed": "Failed to create machine",
     "machine_update_failed": "Failed to update machine",
@@ -136,6 +137,7 @@
     "search": "Search",
     "filter": "Filter",
     "refresh": "Refresh",
-    "or": "or"
+    "or": "or",
+    "restore": "Restore"
   }
 }
