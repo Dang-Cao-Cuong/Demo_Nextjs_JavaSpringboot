@@ -70,18 +70,18 @@ export default function MachineDashboard() {
         <div className="differentProducts">
           <h1>Các sản phẩm của CNC</h1>
           <div className="listProducts">
-            <article className="nameMachine">
+            <div className="nameMachine">
               <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-            </article>
-            <article className="nameMachine">
+            </div>
+            <div className="nameMachine">
               <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-            </article>
-            <article className="nameMachine">
+            </div>
+            <div className="nameMachine">
               <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-            </article>
-            <article className="nameMachine">
+            </div>
+            <div className="nameMachine">
               <img src="https://taikan.vn/wp-content/uploads/2025/10/FH-60P-C-1.png" alt="" />
-            </article>
+            </div>
           </div>
         </div>
       </main>
