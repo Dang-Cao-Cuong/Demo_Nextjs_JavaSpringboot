@@ -4,7 +4,8 @@ import { Machine } from '@/types';
 import { Card, Button, Space, Tag } from 'antd';
 import { EditOutlined, DeleteOutlined, UndoOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { MachineStatusBadge } from './MachineStatusBadge';
+import { MachineStatusBadge } from './machineStatusBadge';
+
 
 interface MachineCardProps {
   machine: Machine;

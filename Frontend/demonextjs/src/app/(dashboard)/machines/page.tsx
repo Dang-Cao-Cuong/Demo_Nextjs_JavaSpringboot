@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useMachines } from '@/hooks/useMachine';
 import MachineList from '@/components/machines/MachineList';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
-import MachineForm from '@/components/machines/MachineForm';
+import MachineForm from '@/components/machines/machineForm';
 import { Machine, MachineFilterParams, MachineCreateRequest } from '@/types';
 
 import { useTranslation } from 'react-i18next';
