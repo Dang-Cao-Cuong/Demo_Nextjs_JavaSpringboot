@@ -7,10 +7,14 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useMachines } from '@/hooks/useMachine';
 import MachineList from '@/components/machines/MachineList';
 import MachineDeleteDialog from '@/components/machines/MachineDeleteDialog';
+<<<<<<< Updated upstream
 import MachineForm from '@/components/machines/machineForm';
+=======
+>>>>>>> Stashed changes
 import { Machine, MachineFilterParams, MachineCreateRequest } from '@/types';
 
 import { useTranslation } from 'react-i18next';
+import MachineForm from '@/components/machines/MachineForm';
 
 export default function MachinesPage() {
   const router = useRouter();
